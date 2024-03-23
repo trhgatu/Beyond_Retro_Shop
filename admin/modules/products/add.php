@@ -2,7 +2,7 @@
 if (!defined("_CODE")) {
     die ("Access Denied !");
 }
-require_once '../class/product.php'; // Include class Product
+require_once '../class/product.php';
 
 $data = [
     'pageTitle' => 'Thêm sản phẩm mới'
@@ -39,7 +39,6 @@ if (isPost()) {
         if (strlen($filterAll['description']) < 50) {
             $error['description']['min'] = 'Mô tả phải có ít nhất 50 ký tự.';
         }
-
     }
     if (empty ($error)) {
         // Dữ liệu hợp lệ, tiến hành thêm sản phẩm
@@ -63,13 +62,11 @@ if (isPost()) {
         setFlashData('old', $filterAll);
         redirect('?module=products&action=add');
     }
-
     // Đặt flash message
     setFlashData('msg', $msg);
     setFlashData('msg_type', $msg_type);
     setFlashData('error', $error);
     setFlashData('old', $filterAll);
-
     // Redirect về trang thêm sản phẩm
     redirect('?module=products&action=add');
 }
