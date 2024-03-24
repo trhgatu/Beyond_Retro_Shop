@@ -92,33 +92,16 @@ $msg_type = getFlashData('msg_type');
                                             <input type="password" class="form-control form-control-user"
                                                 id="exampleInputPassword" placeholder="Mật khẩu" name="password">
                                         </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Nhớ mật
-                                                    khẩu</label>
-                                            </div>
-                                        </div>
+
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
                                             Đăng nhập
                                         </button>
 
                                         <hr>
-                                        <a href="index.html" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-google fa-fw"></i> Đăng nhập bằng Google
-                                        </a>
-                                        <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> Đăng nhập bằng Facebook
-                                        </a>
+
                                     </form>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="?module=authen&action=forgot">Quên mật khẩu?</a>
-                                    </div>
-                                    <div class="text-center">
-                                        <a class="small" href="?module=authen&action=register">Chưa có tài khoản? Đăng
-                                            ký!</a>
-                                    </div>
+
+
                                 </div>
                             </div>
                         </div>

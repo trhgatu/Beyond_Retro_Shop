@@ -2,7 +2,6 @@
 if (!defined("_CODE")) {
     die ("Access Denied !");
 }
-require_once '../admin/includes/connect.php';
 require_once '../class/product.php';
 $data = [
     'pageTitle' => 'Danh sách sản phẩm'
@@ -128,7 +127,7 @@ $old = getFlashData('old');
                                     else:
                                         ?>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="9">
                                                 <div class="alert alert-danger text-center">Không có sản phẩm nào</div>
                                         </tr>
                                         <?php

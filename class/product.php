@@ -17,19 +17,29 @@ class Product
             'description' => $filterAll['description'],
             'created_at' => date('Y-m-d H:i:s'),
         ];
-        $productId = $this->conn->lastInsertId();
-        $dataImagesInsert = [
-            'product_id' => $productId,
-            'images_path' => implode(",", $filterAll['images_path']),
-            'created_at' => date('Y-m-d H:i:s'),
-        ];
-        $insertImageStatus = insert('galery', $dataImagesInsert);
         $insertStatus = insert('product', $dataInsert);
-        if ($insertStatus && $insertImageStatus) {
-            return true; // Thêm sản phẩm thành công
+        if ($insertStatus) {
+            $productId = $this->conn->lastInsertId();
+            $dataImagesInsert = [
+                'product_id' => $productId,
+                'images_path' => implode(",", $filterAll['images_path']),
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+            $insertImageStatus = insert('galery', $dataImagesInsert);
+            if ($insertImageStatus) {
+                setFlashData('msg', 'Thêm sản phẩm mới thành công.');
+                setFlashData('msg_type', 'success');
+                redirect('?module=products&action=list');
+            } else {
+                setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
+                setFlashData('msg_type', 'danger');
+            }
+            redirect('?module=products&action=add');
         } else {
-            return false; // Thêm ảnh thất bại
+            setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
+            setFlashData('msg_type', 'danger');
         }
+
     }
     public function updateProduct($dataUpdate)
     {
@@ -43,10 +53,10 @@ class Product
             'description' => $filterAll['description'],
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-        if (!empty($filterAll['thumbnail'])) {
+        if (!empty ($filterAll['thumbnail'])) {
             $dataUpdate['thumbnail'] = $filterAll['thumbnail'];
         }
-        if (!empty($filterAll['images_path'])) {
+        if (!empty ($filterAll['images_path'])) {
             $dataImagesUpdate = [
                 'product_id' => $productId,
                 'images_path' => implode(",", $filterAll['images_path']),
@@ -84,23 +94,34 @@ class Product
     public function deleteProduct()
     {
         $filterAll = filter();
-        if (!empty($filterAll['id'])) {
+        if (!empty ($filterAll['id'])) {
             $productId = $filterAll['id'];
+            // Lấy chi tiết sản phẩm
             $productDetail = getRaw("SELECT * FROM product WHERE id = $productId");
             if ($productDetail > 0) {
-                //Thực hiện xóa
-                $deleteGalery = delete('galery',"product_id = $productId");
-                if($deleteGalery)
-                {
+                // Xóa các bản ghi trong bảng 'galery' liên kết với sản phẩm
+                $deleteGalery = delete('galery', "product_id = $productId");
+                if ($deleteGalery) {
+                    // Xóa sản phẩm
                     $deleteProduct = delete('product', "id = $productId");
                     if ($deleteProduct) {
-                        return true;
+                        setFlashData('msg', 'Xóa sản phẩm thành công.');
+                        setFlashData('msg_type', 'success');
                     }
+                } else {
                     return false;
                 }
             } else {
-                return false;
+                setFlashData('msg', 'Sản phẩm không tồn tại trong hệ thống.');
+                setFlashData('msg_type', 'danger');
             }
+        } else {
+            setFlashData('msg', 'Liên kết không tồn tại.');
+            setFlashData('msg_type', 'danger');
         }
+        redirect('?module=products&action=list');
     }
+
+
+
 }

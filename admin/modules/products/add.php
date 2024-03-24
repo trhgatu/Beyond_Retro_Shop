@@ -8,7 +8,7 @@ $data = [
     'pageTitle' => 'Thêm sản phẩm mới'
 ];
 
-$product = new Product($conn); // Khởi tạo đối tượng Product và truyền kết nối cơ sở dữ liệu vào
+$product = new Product($conn);
 
 if (isPost()) {
     $filterAll = filter();
@@ -28,47 +28,28 @@ if (isPost()) {
         $error['price']['required'] = 'Giá không được để trống.';
     } else {
         if (!isNumberInt($filterAll['price'])) {
-            $error['price']['isNumberInt'] = 'Giá phải có giá trị là số nguyên.';
+            $error['price']['isNumberInt'] = 'Giá phải là số nguyên.';
         }
 
     }
-    //Validate mô tả: bắt buộc phải nhập, > 50 ký tự
+    //Validate mô tả: bắt buộc phải nhập, < 20 ký tự
     if (empty ($filterAll['description'])) {
         $error['description']['required'] = 'Mô tả không được để trống.';
     } else {
-        if (strlen($filterAll['description']) < 50) {
+        if (strlen($filterAll['description']) < 20) {
             $error['description']['min'] = 'Mô tả phải có ít nhất 50 ký tự.';
         }
     }
-    if (empty ($error)) {
-        // Dữ liệu hợp lệ, tiến hành thêm sản phẩm
-        $insertStatus = $product->addProduct($dataInsert);
-        if ($insertStatus) {
-            // Thêm sản phẩm thành công
-            setFlashData('msg', 'Thêm sản phẩm mới thành công.');
-            setFlashData('msg_type', 'success');
-            redirect('?module=products&action=list');
-        } else {
-            // Thêm sản phẩm thất bại
-            setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
-            setFlashData('msg_type', 'danger');
-        }
-        redirect('?module=products&action=add');
+
+    if (empty($error)) {
+        $product->addProduct($dataInsert);
     } else {
-        // Dữ liệu không hợp lệ, hiển thị thông báo lỗi
         setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
         setFlashData('msg_type', 'danger');
         setFlashData('error', $error);
         setFlashData('old', $filterAll);
         redirect('?module=products&action=add');
     }
-    // Đặt flash message
-    setFlashData('msg', $msg);
-    setFlashData('msg_type', $msg_type);
-    setFlashData('error', $error);
-    setFlashData('old', $filterAll);
-    // Redirect về trang thêm sản phẩm
-    redirect('?module=products&action=add');
 }
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
