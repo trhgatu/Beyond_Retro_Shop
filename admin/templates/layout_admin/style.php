@@ -1,6 +1,6 @@
 <title>
-        <?php echo !empty($data['pageTitle']) ? $data['pageTitle'] : 'Quản lý người dùng'; ?>
-    </title>
+    <?php echo !empty($data['pageTitle']) ? $data['pageTitle'] : 'Quản lý người dùng'; ?>
+</title>
 <!-- Custom fonts for this template-->
 <link href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/all.min.css" rel="stylesheet">
 <link

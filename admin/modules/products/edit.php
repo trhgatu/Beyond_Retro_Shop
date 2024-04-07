@@ -5,7 +5,7 @@ if (!defined("_CODE")) {
 require_once '../class/product.php';
 
 $data = [
-    'pageTitle' => 'Thêm sản phẩm mới'
+    'pageTitle' => 'Sửa sản phẩm'
 ];
 
 $product = new Product($conn); // Khởi tạo đối tượng Product và truyền kết nối cơ sở dữ liệu vào
@@ -52,13 +52,14 @@ if (isPost()) {
         }
     }
     if (empty ($error)) {
+        //gọi hàm update
         $updateStatus = $product->updateProduct($dataUpdate);
         if ($updateStatus){
-            setFlashData('msg', 'Cập nhật sản phẩm thành công.');
+            setFlashData('msg', 'Cập nhật thông tin sản phẩm thành công.');
             setFlashData('msg_type', 'success');
             redirect('?module=products&action=list');
         } else {
-            setFlashData('msg', 'Cập nhật sản phẩm thất bại, vui lòng thử lại.');
+            setFlashData('msg', 'Cập nhật thông tin sản phẩm thất bại, vui lòng thử lại.');
             setFlashData('msg_type', 'danger');
         }
         redirect('?module=products&action=edit');
@@ -83,13 +84,13 @@ if ($productDetails) {
 ?>
 <div id="wrapper">
     <?php
-    layouts('style', $data);
-    layouts('sidebar', $data);
+    layout_admin('style', $data);
+    layout_admin('sidebar', $data);
     ?>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             <?php
-            layouts('header', $data);
+            layout_admin('header', $data);
             ?>
             <div class="container-fluid">
                 <div class="card o-hidden border-0 shadow-lg my-5">
@@ -152,7 +153,7 @@ if ($productDetails) {
                                             <input type="file" class="form-control form-control-user" name="thumbnail"
                                                 onchange="readThumbnailURL(this);">
                                             <?php if (!empty ($old['thumbnail'])): ?>
-                                                <img id="ShowImage" src="../admin/modules/products/images/<?php echo $old['thumbnail']; ?>"
+                                                <img id="ShowImage" src="../images/products/<?php echo $old['thumbnail']; ?>"
                                                     width="150" height="200" />
                                             <?php else: ?>
                                                 <p>Không có hình ảnh bìa hiện tại.</p>
@@ -178,7 +179,7 @@ if ($productDetails) {
                                                         $image_paths = explode(",", $image['images_path']);
                                                         foreach ($image_paths as $image_path) {
                                                             // Hiển thị mỗi ảnh trong thẻ <img>
-                                                            echo "<img src='../admin/modules/products/images/$image_path' style='max-width: 180px;'> ";
+                                                            echo "<img src='../images/products/$image_path' style='max-width: 180px;'> ";
                                                         }
                                                     }
                                                 } else {
@@ -273,7 +274,7 @@ if ($productDetails) {
             </div>
         </div>
         <?php
-        layouts('footer', $data);
+        layout_admin('footer', $data);
         ?>
     </div>
 </div>

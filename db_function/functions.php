@@ -9,10 +9,15 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-function layouts($layoutName = 'header', $data = [])
+function layout_admin($layoutName = 'header', $data = [])
 {
     if (file_exists(_WEB_PATH_TEMPLATE . '/layout_admin/' . $layoutName . '.php')) {
         require_once(_WEB_PATH_TEMPLATE . '/layout_admin/' . $layoutName . '.php');
+    }
+}
+function layout($layoutName = 'header', $data=[]){
+    if(file_exists(_WEB_PATH_TEMPLATE . '/layout/' . $layoutName . '.php')){
+        require_once(_WEB_PATH_TEMPLATE . '/layout/' . $layoutName . '.php');
     }
 }
 function sendMail($to, $subject, $content)
@@ -157,7 +162,7 @@ function redirect($path = 'index.php')
 // Hàm thông báo lỗi
 function form_error($fileName, $beforeHtml = '', $afterHtml = '', $error)
 {
-    return (!empty($error[$fileName])) ? '<span class= "error">' . reset($error[$fileName]) . '</span>' : null;
+    return (!empty($error[$fileName])) ? '<span class= "error" style="color: red">' . reset($error[$fileName]) . '</span>' : null;
 }
 //Hàm hiển thị dữ liệu cũ
 function old($fileName, $oldData, $default = null)
@@ -168,16 +173,21 @@ function old($fileName, $oldData, $default = null)
 function isLogin()
 {
     $checkLogin = false;
-    //Kiểm tra trạng thái đăng nhập
+
+    // Kiểm tra trạng thái đăng nhập
     if (getSession('tokenlogin')) {
         $tokenLogin = getSession('tokenlogin');
-        //Kiểm tra token giống trong database
+
+        // Kiểm tra token giống trong cơ sở dữ liệu
         $queryToken = oneRaw("SELECT user_id FROM tokenlogin WHERE token = '$tokenLogin'");
+
         if (!empty($queryToken)) {
             $checkLogin = true;
         } else {
+            // Nếu token không tồn tại trong cơ sở dữ liệu, loại bỏ nó khỏi session
             removeSession('tokenlogin');
         }
     }
+
     return $checkLogin;
 }

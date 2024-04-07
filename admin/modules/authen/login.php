@@ -113,6 +113,6 @@ $msg_type = getFlashData('msg_type');
 </body>
 
 <?php
-layouts('footer-login');
-layouts('style', $data);
+layout_admin('footer-login');
+layout_admin('style', $data);
 ?>

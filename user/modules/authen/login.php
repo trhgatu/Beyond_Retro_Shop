@@ -1,135 +1,102 @@
 <!-- Đăng nhập tài khoản -->
 <?php
 if (!defined("_CODE")) {
-    die("Access Denied !");
+	die("Access Denied !");
 }
-
+require_once '../class/authen.php';
+$authen = new Authen($conn);
 $data = [
-    'pageTitle' => 'Đăng nhập tài khoản'
+	'pageTitle' => 'Đăng nhập tài khoản'
 ];
 
 //Kiểm tra trạng thái đăng nhập
-if (isLogin()) {
-    redirect('?module=home&action=dashboard');
-}
 
 if (isPost()) {
-    $filterAll = filter();
-    if (!empty(trim($filterAll['email'])) && !empty(trim($filterAll['password']))) {
-        $email = $filterAll['email'];
-        $password = $filterAll['password'];
-
-        $userQuery = oneRaw("SELECT password, id FROM user WHERE email = '$email'");
-
-        if (!empty($userQuery)) {
-            $passwordHash = $userQuery['password'];
-            $userId = $userQuery['id'];
-            if (password_verify($password, $passwordHash)) {
-                //Tạo token login
-                $tokenLogin = sha1(uniqid() . time());
-                //Insert vào bảng tokenlogin
-                $dataInsert = [
-                    'user_id' => $userId,
-                    'token' => $tokenLogin,
-                    'created_at' => date('Y-m-d H:i:s'),
-                ];
-                $insertStatus = insert('tokenlogin', $dataInsert);
-
-                if ($insertStatus) {
-                    //insert thành công
-                    //lưu token login vào session
-                    setSession('tokenlogin', $tokenLogin);
-                    redirect('?module=home&action=dashboard'); //Chuyển hướng đến trang dashboard sau khi đăng nhập thành công
-                } else {
-                    setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
-                    setFlashData('msg_type', 'danger');
-                }
-            } else {
-                setFlashData('msg', 'Mật khẩu không chính xác.');
-                setFlashData('msg_type', 'danger');
-            }
-        } else {
-            setFlashData('msg', 'Email không tồn tại.');
-            setFlashData('msg_type', 'danger');
-        }
-    } else {
-        setFlashData('msg', 'Vui lòng nhập email và mật khẩu.');
-        setFlashData('msg_type', 'danger');
-    }
-    redirect('?module=authen&action=login');
+	$authen->login();
 }
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 ?>
 
-<body class="bg-gradient-primary">
-    <div class="container">
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-            <div class="col-xl-10 col-lg-12 col-md-9">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                                    </div>
-                                    <?php
-                                    if (!empty($msg)) {
-                                        getMSG($msg, $msg_type);
-                                    }
-                                    ?>
-                                    <form class="user" method="post">
-                                        <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Nhập email" name="email">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Mật khẩu" name="password">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Nhớ mật
-                                                    khẩu</label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
-                                            Đăng nhập
-                                        </button>
+<!doctype html>
+<html lang="en">
 
-                                        <hr>
-                                        <a href="index.html" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-google fa-fw"></i> Đăng nhập bằng Google
-                                        </a>
-                                        <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> Đăng nhập bằng Facebook
-                                        </a>
-                                    </form>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="?module=authen&action=forgot">Quên mật khẩu?</a>
-                                    </div>
-                                    <div class="text-center">
-                                        <a class="small" href="?module=authen&action=register">Chưa có tài khoản? Đăng
-                                            ký!</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<head>
+	<title>Đăng nhập</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE ;?>/css/style_login.css">
+
+</head>
+
+<body>
+	<section class="ftco-section">
+		<div class="container">
+
+			<div class="row justify-content-center">
+				<div class="col-md-12 col-lg-10">
+					<div class="wrap d-md-flex">
+						<div class="img" style="background-image: url(images/bg-1.jpg);">
+						</div>
+						<div class="login-wrap p-4 p-md-5">
+							<div class="d-flex">
+								<div class="w-100">
+									<h3 class="mb-4" style="text-transform: uppercase">Đăng nhập</h3>
+								</div>
+
+							</div>
+							<?php if (!empty($msg)) {
+								getMSG($msg, $msg_type);
+							} ?>
+							<form class="user" method="post">
+								<div class="form-group mb-3">
+									<label class="label" for="name">Email</label>
+									<input type="text" class="form-control" placeholder="Email" name="email">
+								</div>
+								<div class="form-group mb-3">
+									<label class="label" for="password">Password</label>
+									<input type="password" class="form-control" placeholder="Password" name="password">
+								</div>
+								<div class="form-group">
+									<button type="submit" class="form-control btn btn-primary rounded submit px-3">Đăng
+										nhập</button>
+								</div>
+								<div class="form-group d-md-flex">
+									<div class="w-50 text-md-right" style="padding-right: 73px">
+										<a href="?module=authen&action=forgot">Quên mật khẩu</a>
+									</div>
+									<div class="w-50 text-md-left"  style="padding-left: 49px;">
+										<p class="text-center">Chưa có tài khoản? <a data-toggle="tab"
+												href="?module=authen&action=register">Đăng ký</a>
+										</p>
+									</div>
+
+								</div>
+								<style>
+									.form-group a:hover {
+										color: #E3B04B;
+
+									}
+								</style>
+							</form>
+
+							</>
+						</div>
+					</div>
+				</div>
+			</div>
+	</section>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/popper.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/main.js"></script>
+
 </body>
 
-<?php
-layouts('footer-login');
-layouts('style', $data);
-?>
+</html>

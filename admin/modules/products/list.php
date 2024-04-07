@@ -1,6 +1,6 @@
 <?php
 if (!defined("_CODE")) {
-    die ("Access Denied !");
+    die("Access Denied !");
 }
 require_once '../class/product.php';
 $data = [
@@ -18,13 +18,13 @@ $old = getFlashData('old');
 
 <div id="wrapper">
     <?php
-    layouts('style', $data);
-    layouts('sidebar', $data);
+    layout_admin('style', $data);
+    layout_admin('sidebar', $data);
     ?>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             <?php
-            layouts('header', $data);
+            layout_admin('header', $data);
             ?>
             <div class="container-fluid">
                 <div class="card shadow mb-4" style="max-width: 1240px">
@@ -37,7 +37,7 @@ $old = getFlashData('old');
 
                     </div>
                     <?php
-                    if (!empty ($msg)) {
+                    if (!empty($msg)) {
                         getMSG($msg, $msg_type);
                     }
                     ?>
@@ -58,7 +58,7 @@ $old = getFlashData('old');
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if (!empty ($listProducts)):
+                                    if (!empty($listProducts)):
                                         $count = 0; //STT
                                         foreach ($listProducts as $item):
                                             $count++;
@@ -86,39 +86,43 @@ $old = getFlashData('old');
                                                     ?>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['price'] ?>
+                                                    <?php echo number_format($item['price'], 0, ',', '.') ?> VND
                                                 </td>
                                                 <td>
-                                                    <img src="../admin/modules/products/images/<?php echo $item['thumbnail'] ?>"
-                                                        style="max-width: 180px;">
+                                                    <img src="../images/products/<?php echo $item['thumbnail'] ?>"
+                                                        style="max-width: 170px;">
                                                 </td>
                                                 <td>
                                                     <?php
                                                     $product_id = $item['id']; // Lấy ID của sản phẩm
-                                                    $conn = new PDO("mysql:host=localhost;dbname=beyond_retro", "root", "mysql");
-                                                    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                                                    // Truy vấn để lấy tất cả các hình ảnh từ bảng galery dựa trên product_id của sản phẩm
-                                                    $stmt = $conn->prepare("SELECT images_path FROM galery WHERE product_id = :product_id");
-                                                    $stmt->bindParam(':product_id', $product_id);
-                                                    $stmt->execute();
-                                                    $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                                    foreach ($images as $image) {
-                                                        $image_paths = explode(",", $image['images_path']);
-                                                        foreach ($image_paths as $image_path) {
-                                                            // Hiển thị mỗi ảnh trong thẻ <img>
-                                                            echo "<img src='../admin/modules/products/images/$image_path' style='max-width: 180px;'> ";
+                                                    $product = new Product($conn); // Khởi tạo một đối tượng Product
+                                                    $images = $product->getImagesByProductId($product_id); // Lấy danh sách hình ảnh bằng product_id
+                                                    if ($images) {
+                                                        foreach ($images as $image) {
+
+                                                            foreach ($images as $image) {
+                                                                $image_paths = explode(",", $image['images_path']);
+                                                                foreach ($image_paths as $image_path) {
+                                                                    // Hiển thị mỗi ảnh trong thẻ <img>
+                                                                    echo "<img src='../images/products/$image_path' style='width: 40%;'> ";
+                                                                }
+                                                            }
+
                                                         }
+                                                    } else {
+                                                        echo "Không có hình ảnh cho sản phẩm này.";
                                                     }
                                                     ?>
+
                                                 </td>
                                                 <td>
                                                     <?php echo $item['description'] ?>
                                                 </td>
-                                                <td><a href="<?php echo _WEB_HOST; ?>?module=products&action=edit&id=<?php echo $item['id'] ?>"
+                                                <td><a href="<?php echo _WEB_HOST_ADMIN; ?>?module=products&action=edit&id=<?php echo $item['id'] ?>"
                                                         class="btn btn-warning btn-sm"><i
                                                             class="fa-solid fa-pen-to-square"></i></a>
                                                 </td>
-                                                <td><a href="<?php echo _WEB_HOST; ?>?module=products&action=delete&id=<?php echo $item['id'] ?>"
+                                                <td><a href="<?php echo _WEB_HOST_ADMIN; ?>?module=products&action=delete&id=<?php echo $item['id'] ?>"
                                                         onclick="return confirm('Bạn có muốn xóa?')"
                                                         class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a></td>
                                             </tr>
@@ -145,7 +149,7 @@ $old = getFlashData('old');
             </div>
         </div>
         <?php
-        layouts('footer', $data);
+        layout_admin('footer', $data);
         ?>
     </div>
 

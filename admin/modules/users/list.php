@@ -9,8 +9,8 @@ $data = [
 if (!isLogin()) {
     redirect('?module=authen&action=login');
 }
+require_once '../class/user.php';
 //Truy vấn vào bảng user
-$listUsers = getRaw("SELECT * FROM user ORDER BY updated_at");
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 //$error = getFlashData('error');
@@ -18,13 +18,13 @@ $msg_type = getFlashData('msg_type');
 ?>
 <div id="wrapper">
     <?php
-    layouts('style', $data);
-    layouts('sidebar', $data);
+    layout_admin('style', $data);
+    layout_admin('sidebar', $data);
     ?>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             <?php
-            layouts('header', $data);
+            layout_admin('header', $data);
             ?>
             <div class="container-fluid">
                 <div class="card shadow mb-4" style="max-width: 1240px">
@@ -46,6 +46,7 @@ $msg_type = getFlashData('msg_type');
                                 <thead>
                                     <th>STT</th>
                                     <th width="80px">Loại</th>
+                                    <th>Ảnh đại diện</th>
                                     <th>Họ tên</th>
                                     <th>Email</th>
                                     <th>Số điện thoại</th>
@@ -56,6 +57,9 @@ $msg_type = getFlashData('msg_type');
                                 </thead>
                                 <tbody>
                                     <?php
+                                    $user = new User($conn);
+                                    $listUsers = $user->listUser();
+
                                     if (!empty ($listUsers)):
                                         $count = 0; //STT
                                         foreach ($listUsers as $item):
@@ -81,6 +85,10 @@ $msg_type = getFlashData('msg_type');
                                                     ?>
                                                 </td>
                                                 <td>
+                                                    <img src="../images/avatar/<?php echo $item['avatar'] ?>"
+                                                        style="max-width: 170px;">
+                                                </td>
+                                                <td>
                                                     <?php echo $item['fullname'] ?>
                                                 </td>
                                                 <td>
@@ -92,11 +100,11 @@ $msg_type = getFlashData('msg_type');
                                                 <td>
                                                     <?php echo $item['status'] == 1 ? '<button class="btn btn-success btn-sm">Đã kích hoạt</button>' : '<button class="btn btn-danger btn-sm">Chưa kích hoạt</button>'; ?>
                                                 </td>
-                                                <td><a href="<?php echo _WEB_HOST; ?>?module=users&action=edit&id=<?php echo $item['id'] ?>"
+                                                <td><a href="<?php echo _WEB_HOST_ADMIN; ?>?module=users&action=edit&id=<?php echo $item['id'] ?>"
                                                         class="btn btn-warning btn-sm"><i
                                                             class="fa-solid fa-pen-to-square"></i></a>
                                                 </td>
-                                                <td><a href="<?php echo _WEB_HOST; ?>?module=users&action=delete&id=<?php echo $item['id'] ?>"
+                                                <td><a href="<?php echo _WEB_HOST_ADMIN; ?>?module=users&action=delete&id=<?php echo $item['id'] ?>"
                                                         onclick="return confirm('Bạn có muốn xóa?')"
                                                         class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a></td>
                                             </tr>
@@ -125,7 +133,7 @@ $msg_type = getFlashData('msg_type');
             </div>
         </div>
         <?php
-        layouts('footer', $data);
+       layout_admin('footer', $data);
         ?>
     </div>
 

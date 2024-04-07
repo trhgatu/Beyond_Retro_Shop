@@ -59,13 +59,13 @@ $old = getFlashData('old');
 
 <div id="wrapper">
     <?php
-    layouts('style', $data);
-    layouts('sidebar', $data);
+    layout_admin('style', $data);
+    layout_admin('sidebar', $data);
     ?>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             <?php
-            layouts('header', $data);
+            layout_admin('header', $data);
             ?>
             <div class="container-fluid">
                 <div class="card o-hidden border-0 shadow-lg my-5">
@@ -214,7 +214,7 @@ $old = getFlashData('old');
             </div>
         </div>
         <?php
-        layouts('footer', $data);
+        layout_admin('footer', $data);
         ?>
     </div>
 </div>

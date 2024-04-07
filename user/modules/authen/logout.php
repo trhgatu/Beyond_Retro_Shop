@@ -3,10 +3,9 @@
 if (!defined("_CODE")) {
     die("Access Denied !");
 }
+require_once '../class/authen.php';
+$authen = new Authen($conn);
 if (isLogin()) {
-    $token = getSession('tokenlogin');
-    delete('tokenlogin', "token='$token'");
-    removeSession('tokenlogin');
-    redirect('?module=authen&action=login');
+    $authen->logout();
 }
 ?>

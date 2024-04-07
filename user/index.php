@@ -1,13 +1,13 @@
 <?php
 session_start();
 require_once("config.php");
-require_once("../includes/connect.php");
-require_once("../includes/phpmailer/Exception.php");
-require_once("../includes/phpmailer/PHPMailer.php");
-require_once("../includes/phpmailer/SMTP.php");
-require_once("../includes/functions.php");
-require_once("../includes/database.php");
-require_once("../includes/session.php");
+require_once("../db_function/connect.php");
+require_once("includes/phpmailer/Exception.php");
+require_once("includes/phpmailer/PHPMailer.php");
+require_once("includes/phpmailer/SMTP.php");
+require_once("../db_function/functions.php");
+require_once("../db_function/database.php");
+require_once("../db_function/session.php");
 $module = _MODULE;
 $action = _ACTION;
 

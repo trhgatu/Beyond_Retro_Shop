@@ -53,10 +53,10 @@ class Product
             'description' => $filterAll['description'],
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-        if (!empty ($filterAll['thumbnail'])) {
+        if (!empty($filterAll['thumbnail'])) {
             $dataUpdate['thumbnail'] = $filterAll['thumbnail'];
         }
-        if (!empty ($filterAll['images_path'])) {
+        if (!empty($filterAll['images_path'])) {
             $dataImagesUpdate = [
                 'product_id' => $productId,
                 'images_path' => implode(",", $filterAll['images_path']),
@@ -94,7 +94,7 @@ class Product
     public function deleteProduct()
     {
         $filterAll = filter();
-        if (!empty ($filterAll['id'])) {
+        if (!empty($filterAll['id'])) {
             $productId = $filterAll['id'];
             // Lấy chi tiết sản phẩm
             $productDetail = getRaw("SELECT * FROM product WHERE id = $productId");
@@ -120,6 +120,20 @@ class Product
             setFlashData('msg_type', 'danger');
         }
         redirect('?module=products&action=list');
+    }
+    public function getImagesByProductId($product_id)
+    {
+        try {
+            $stmt = $this->conn->prepare("SELECT images_path FROM galery WHERE product_id = :product_id");
+            $stmt->bindParam(':product_id', $product_id);
+            $stmt->execute();
+            $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $images;
+        } catch (PDOException $e) {
+            // Xử lý ngoại lệ nếu cần thiết
+            echo "Lỗi: " . $e->getMessage();
+            return false;
+        }
     }
 
 

@@ -1,6 +1,6 @@
 <?php
 if (!defined("_CODE")) {
-    die ("Access Denied !");
+    die("Access Denied !");
 }
 require_once '../class/user.php';
 $data = [
@@ -12,7 +12,7 @@ if (isPost()) {
     $filterAll = filter();
     $error = [];//Mảng chữa lỗi
     //Validate fullname: bắt buộc phải nhập, họ tên có ít nhất 5 ký tự
-    if (empty ($filterAll['fullname'])) {
+    if (empty($filterAll['fullname'])) {
         $error['fullname']['required'] = 'Họ tên bắt buộc phải nhập.';
     } else {
         if (strlen($filterAll['fullname']) < 5) {
@@ -20,7 +20,7 @@ if (isPost()) {
         }
     }
     //Validate Email: bắt buộc phải nhập, đúng định dạng email không, email đã tồn tại trong csdl chưa
-    if (empty ($filterAll['email'])) {
+    if (empty($filterAll['email'])) {
         $error['email']['required'] = 'Email bắt buộc phải nhập.';
     } else {
         $email = $filterAll['email'];
@@ -30,7 +30,7 @@ if (isPost()) {
         }
     }
     //Validate Số điện thoại: bắt buộc phải nhập, đúng định dạng không
-    if (empty ($filterAll['phone_number'])) {
+    if (empty($filterAll['phone_number'])) {
         $error['phone_number']['required'] = 'SDT bắt buộc phải nhập.';
     } else {
         if (!isPhone($filterAll['phone_number'])) {
@@ -38,7 +38,7 @@ if (isPost()) {
         }
     }
     //Validate password: bắt buộc phải nhập, >= 8 ký tự
-    if (empty ($filterAll['password'])) {
+    if (empty($filterAll['password'])) {
         $error['password']['required'] = 'Mật khẩu bắt buộc phải nhập.';
     } else {
         if (strlen($filterAll['password']) < 8) {
@@ -46,7 +46,7 @@ if (isPost()) {
         }
     }
     //Validate password confirm: bắt buộc phải nhập, giống password
-    if (empty ($filterAll['password_confirm'])) {
+    if (empty($filterAll['password_confirm'])) {
         $error['password_confirm']['required'] = 'Bạn phải nhập lại mật khẩu.';
     } else {
         if (($filterAll['password']) != ($filterAll['password_confirm'])) {
@@ -54,9 +54,9 @@ if (isPost()) {
         }
     }
 
-    if (empty ($error)) {
+    if (empty($error)) {
         //Gọi hàm addUser
-       $user->addUser($filterAll);
+        $user->addUser($filterAll);
     } else {
         setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
         setFlashData('msg_type', 'danger');
@@ -72,31 +72,67 @@ $old = getFlashData('old');
 ?>
 <div id="wrapper">
     <?php
-    layouts('style', $data);
-    layouts('sidebar', $data);
+    layout_admin('style', $data);
+    layout_admin('sidebar', $data);
     ?>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-            <?php
-            layouts('header', $data);
-            ?>
+            <?php layout_admin('header', $data); ?>
             <div class="container-fluid">
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
-
-
                         <div class="p-5">
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Thêm người dùng</h1>
                             </div>
-                            <?php
-                            if (!empty ($msg)) {
+                            <?php if (!empty($msg)) {
                                 getMSG($msg, $msg_type);
-                            }
-                            ?>
+                            } ?>
+
                             <form class="user" method="post">
                                 <div class="row">
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <div class="avatar">
+                                                <p>Ảnh đại diện:</p>
+                                                <input type="file" name="avatar" style="padding-bottom: 20px;"
+                                                    onchange="readURL(this);">
+                                                <div class="showImage">
+                                                    <img id="ShowImage" />
+                                                </div>
+                                            </div>
+                                            <style>
+                                                .avatar {
+                                                    margin-bottom: 20px;
+                                                }
+
+                                                .showImage {
+                                                    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+                                                    width: 200px;
+                                                    height: 250px;
+                                                    padding: 22px
+                                                }
+                                            </style>
+
+                                            <script>
+                                                function readURL(input) {
+                                                    if(input.files && input.files[0]) {
+                                                        var reader = new FileReader();
+                                                        reader.onload = function (e) {
+                                                            $('#ShowImage')
+                                                                .attr('src', e.target.result)
+                                                                .width(150)
+                                                                .height(200);
+                                                        };
+                                                        reader.readAsDataURL(input.files[0]);
+                                                    }
+                                                }
+                                            </script>
+                                        </div>
+                                    </div>
+
                                     <div class="col">
                                         <div class="form-group">
                                             <input type="fullname" class="form-control form-control-user"
@@ -119,16 +155,7 @@ $old = getFlashData('old');
                                             ?>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="">Trạng thái</label>
-                                            <select name="status" id="" class="form-control">
-                                                <option value="0" <?php echo (old('status', $old) == 0) ? 'selected' : false; ?>>Chưa kích hoạt</option>
-                                                <option value="1" <?php echo (old('status', $old) == 1) ? 'selected' : false; ?>>Đã kích hoạt</option>
-                                            </select>
-                                        </div>
 
-                                    </div>
-                                    <div class="col">
                                         <div class="form-group row">
                                             <div class="col-sm-6 mb-3 mb-sm-0">
                                                 <input type="text" class="form-control form-control-user"
@@ -154,7 +181,6 @@ $old = getFlashData('old');
                                             </div>
                                         </div>
                                         <div class="form-group">
-
                                             <input type="text" class="form-control form-control-user"
                                                 id="exampleInputPassword" placeholder="Số điện thoại"
                                                 name="phone_number" value="<?php
@@ -162,29 +188,37 @@ $old = getFlashData('old');
                                                     ?>">
                                             <?php
                                             echo form_error('phone_number', '<span class= "error">', '</span>', $error);
-
                                             ?>
-
                                         </div>
-                                        <div class="form-group">
-                                            <label for="role">Loại tài khoản:</label>
-                                            <select id="role_id" name="role_id" class="form-control">
-                                                <?php
-                                                $sql = "SELECT id, name FROM role";
-                                                $stmt = $conn->prepare($sql);
-                                                $stmt->execute();
-                                                $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                                foreach ($roles as $role) {
-                                                    echo "<option value='" . $role['id'] . "'>" . $role['name'] . "</option>";
-                                                }
-                                                ?>
-                                            </select>
-
-
+                                        <div class="form-group row">
+                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                <label for="role">Loại tài khoản:</label>
+                                                <select id="role_id" name="role_id" class="form-control">
+                                                    <?php
+                                                    $sql = "SELECT id, name FROM role";
+                                                    $stmt = $conn->prepare($sql);
+                                                    $stmt->execute();
+                                                    $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                                    foreach ($roles as $role) {
+                                                        echo "<option value='" . $role['id'] . "'>" . $role['name'] . "</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                <label for="">Trạng thái</label>
+                                                <select name="status" id="" class="form-control">
+                                                    <option value="0" <?php echo (old('status', $old) == 0) ? 'selected' : false; ?>>Chưa kích hoạt</option>
+                                                    <option value="1" <?php echo (old('status', $old) == 1) ? 'selected' : false; ?>>Đã kích hoạt</option>
+                                                </select>
+                                            </div>
                                         </div>
-
                                     </div>
+
+
                                 </div>
+
+
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
                                         <button type="submit" class="mg-btn btn btn-primary btn-block">
@@ -204,7 +238,7 @@ $old = getFlashData('old');
             </div>
         </div>
         <?php
-        layouts('footer', $data);
+        layout_admin('footer', $data);
         ?>
     </div>
 

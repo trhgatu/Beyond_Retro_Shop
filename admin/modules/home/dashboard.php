@@ -12,7 +12,7 @@ $data = [
 
     <!-- Sidebar -->
     <?php
-    layouts('sidebar', $data);
+    layout_admin('sidebar', $data);
     ?>
 
     <!-- End of Sidebar -->
@@ -20,9 +20,9 @@ $data = [
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
         <?php
-        layouts('header', $data);
-        layouts('style', $data);
-        layouts('footer', $data);
+        layout_admin('header', $data);
+        layout_admin('style', $data);
+        layout_admin('footer', $data);
         ?>
     </div>
     <!-- End of Content Wrapper -->

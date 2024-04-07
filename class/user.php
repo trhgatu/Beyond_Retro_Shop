@@ -1,6 +1,4 @@
 <?php
-
-
 class User
 {
     private $conn;
@@ -16,6 +14,7 @@ class User
         $activeToken = sha1(uniqid() . time());
         $dataInsert = [
             'fullname' => $filterAll['fullname'],
+            'avatar' => $filterAll['avatar'],
             'email' => $filterAll['email'],
             'phone_number' => $filterAll['phone_number'],
             'password' => password_hash($filterAll['password'], PASSWORD_DEFAULT),
@@ -62,6 +61,24 @@ class User
         }
         redirect('?module=users&action=list');
     }
+    public function listUser()
+    {
+        $users = array();
 
+        $query = "SELECT * FROM user";
+        $result = $this->conn->query($query);
 
+        // Kiểm tra xem truy vấn có dữ liệu trả về không
+        if ($result && $result->rowCount() > 0) {
+            // Lặp qua các hàng kết quả và thêm thông tin của mỗi sản phẩm vào mảng
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                $users[] = $row;
+            }
+        }
+        // Trả về mảng chứa thông tin về tất cả các sản phẩm
+        return $users;
+    }
+    public function showProfile(){
+
+    }
 }
