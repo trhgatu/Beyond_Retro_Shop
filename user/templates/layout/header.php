@@ -46,7 +46,8 @@
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="header__logo">
-                    <a href="http://localhost/Beyond_Retro/include/index.php"><img src="../img/beyond-retro-logo.png" style="max-width : 80%" alt=""></a>
+                    <a href="http://localhost/Beyond_Retro/include/index.php"><img src="../img/beyond-retro-logo.png"
+                            style="max-width : 80%" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6">
@@ -99,115 +100,20 @@
                 <div class="header__nav__option">
                     <a href="#" class="search-switch"><img src="../img/icon/search-icon.png" alt=""
                             style="width: 20px"></a>
-                    <div class="dropdown">
-                    <a href="#" class="account-switch"><img src="../img/icon/user.png" alt="" style="width: 20px"></a>
-
-                        <?php
-                        if (isLogin()) {
-                            ?>
-                                <ul style="list-style: none" class="dropdown-content">
-                                    <li class="dropdown-link" style="padding-right: 45px"><a
-                                            href= "../user/?module=account&action=profile">Tài khoản</a></li>
-                                    <li class="dropdown-link" style="padding-right: 40px"><a
-                                            href="../user/?module=authen&action=logout">Đăng xuất</a></li>
-                                </ul>
-
-
-                            <?php
-                        } else {
-                            ?>
-
-                                <ul style="list-style: none" class="dropdown-content">
-                                    <li class="dropdown-link" style="padding-right: 19px"><a
-                                            href="../user/?module=authen&action=login">Đăng nhập</a></li>
-                                    <li class="dropdown-link" style="padding-right: 40px"><a
-                                            href="../user/?module=authen&action=register">Đăng ký</a></li>
-                                </ul>
-
-
-
-                            <?php
-
-                        }
+                    <?php
+                    if (isLogin()) {
                         ?>
-
-
-
-
-
-
-                        <style>
-                            .dropbtn {
-                                background-color: #04AA6D;
-                                color: white;
-                                padding: 16px;
-                                font-size: 16px;
-                                border: none;
-                            }
-
-                            .dropdown {
-                                position: relative;
-                                display: inline-block;
-                            }
-
-                            .dropdown-content {
-                                display: none;
-                                position: absolute;
-                                background-color: #f1f1f1;
-                                min-width: 150px;
-                                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-                                z-index: 1;
-                                transition: opacity 0.3s, transform 0.3s;
-                                opacity: 0;
-                                transform: translateY(-20px);
-                                margin-top: 10px;
-                                padding: 0;
-                                /* Loại bỏ padding của danh sách */
-                                list-style-type: none;
-                                /* Loại bỏ dấu đầu dòng */
-                                display: flex;
-                                /* Hiển thị các phần tử theo chiều ngang */
-                                flex-direction: column;
-                                /* Sắp xếp các phần tử theo chiều dọc */
-                            }
-
-                            .dropdown-content a {
-                                color: black;
-                                padding: 8px 16px;
-                                text-decoration: none;
-                                display: block;
-                                margin: 0;
-                                transition: color 0.3s;
-                            }
-
-                            .dropdown-content a:hover {
-                                color: #e53637;
-                                ;
-                            }
-
-                            .dropdown:hover .dropdown-content {
-                                opacity: 1;
-                                /* Hiển thị dropdown */
-                                transform: translateY(0);
-                                /* Di chuyển dropdown về vị trí ban đầu */
-                            }
-
-                            .dropdown:hover .dropbtn {
-                                background-color: #3e8e41;
-                            }
-
-                            .dropdown-link:hover {
-                                background-color: #ddd;
-
-                            }
-                        </style>
-
-
-
-
-
-                    </div>
-                    <a href="./shopping-cart.php"><img src="../img/icon/shopping-bag.png" style="width: 23px" alt="">
+                        <a href="../user/?module=account&action=profile" class="account-switch"><img
+                                src="../img/icon/user.png" alt="" style="width: 20px"></a>
+                        <?php
+                    } else {
+                        ?>
+                        <a href="../user/?module=authen&action=login" class="account-switch"><img src="../img/icon/user.png"
+                                alt="" style="width: 20px"></a>
+                        <?php
+                    }
+                    ?>
+                    <a href="http://localhost/Beyond_Retro/include/shopping-cart.php"><img src="../img/icon/shopping-bag.png" style="width: 23px" alt="">
                         <span>0</span></a>
                     <div class="price">$0.00</div>
                 </div>

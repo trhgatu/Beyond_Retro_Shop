@@ -36,7 +36,7 @@ class User
     public function deleteUser()
     {
         $filterAll = filter();
-        if (!empty ($filterAll['id'])) {
+        if (!empty($filterAll['id'])) {
             $userId = $filterAll['id'];
             $userDetail = getRaw("SELECT * FROM user WHERE id = $userId");
             if ($userDetail > 0) {
@@ -75,10 +75,42 @@ class User
                 $users[] = $row;
             }
         }
-        // Trả về mảng chứa thông tin về tất cả các sản phẩm
         return $users;
     }
-    public function showProfile(){
+    public function showProfile()
+{
+    if (isLogin()) {
+        // Lấy token từ session
+        $token = getSession('tokenlogin');
 
+        // Truy vấn cơ sở dữ liệu để lấy thông tin user_id từ token
+        $query = "SELECT user_id FROM tokenlogin WHERE token = :token";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+
+        // Kiểm tra xem có dữ liệu trả về không
+        if ($stmt->rowCount() > 0) {
+            // Lấy user_id từ kết quả truy vấn
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user_id = $row['user_id'];
+
+            // Truy vấn cơ sở dữ liệu để lấy thông tin người dùng từ user_id
+            $query_user = "SELECT * FROM user WHERE id = :user_id";
+            $stmt_user = $this->conn->prepare($query_user);
+            $stmt_user->bindParam(':user_id', $user_id);
+            $stmt_user->execute();
+
+            // Kiểm tra xem có dữ liệu trả về không
+            if ($stmt_user->rowCount() > 0) {
+                // Trả về thông tin người dùng nếu tìm thấy
+                return $stmt_user->fetch(PDO::FETCH_ASSOC);
+            }
+        }
     }
+    return null; // Trả về null nếu không tìm thấy thông tin người dùng
+}
+
+
+
 }

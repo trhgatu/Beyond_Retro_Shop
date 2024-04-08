@@ -57,7 +57,7 @@ if (isPost()) {
     if (empty($error)) {
         $authen->register();
 
-    }else {
+    } else {
         setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
         setFlashData('msg_type', 'danger');
         setFlashData('error', $error);
@@ -76,7 +76,6 @@ $old = getFlashData('old');
 <html lang="en">
 
 <head>
-    <title>Login 04</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -84,11 +83,15 @@ $old = getFlashData('old');
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="../css/style_login.css">
+
+    <link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/style_login.css">
 
 </head>
 
 <body>
+    <?php
+    layout('header', $data);
+    ?>
     <section class="ftco-section">
         <div class="container">
 
@@ -163,25 +166,31 @@ $old = getFlashData('old');
                                     ?>
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="form-control btn btn-primary rounded submit px-3">Đăng
+                                    <button type="submit" class="form-control submit" style="color: #ffffff; background-color: #000000;">Đăng
                                         ký</button>
                                 </div>
 
                             </form>
-                            <p class="text-center">Đã có tài khoản?<a data-toggle="tab"
-                                    href="?module=authen&action=register">Đăng nhập</a>
+                            <p class="text-center">Đã có tài khoản?<a href="?module=authen&action=login">Đăng nhập</a>
                             </p>
+                            <style>
+                                a{
+                                    color: gray;
+                                }
+                                a:hover {
+                                    color: #e53637;
+
+                                }
+                            </style>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
+    <?php
+    layout('footer', $data);
+    ?>
 
 </body>
 

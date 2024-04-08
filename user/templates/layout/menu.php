@@ -9,8 +9,4 @@
         <a href="#"><img src="../img/icon/cart.png" alt=""> <span>0</span></a>
         <div class="price">$0.00</div>
     </div>
-    <div id="mobile-menu-wrap"></div>
-    <div class="offcanvas__text">
-        <p>Free shipping, 30-day return or refund guarantee.</p>
-    </div>
 </div>

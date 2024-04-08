@@ -19,30 +19,39 @@ if (isPost()) {
         $email = $filterAll['email'];
         $password = $filterAll['password'];
 
-        $userQuery = oneRaw("SELECT password, id FROM user WHERE email = '$email'");
+        $userQuery = oneRaw("SELECT password, id, role_id FROM user WHERE email = '$email'");
 
         if (!empty($userQuery)) {
             $passwordHash = $userQuery['password'];
             $userId = $userQuery['id'];
+            $roleId = $userQuery['role_id'];
             if (password_verify($password, $passwordHash)) {
-                //Tạo token login
-                $tokenLogin = sha1(uniqid() . time());
-                //Insert vào bảng tokenlogin
-                $dataInsert = [
-                    'user_id' => $userId,
-                    'token' => $tokenLogin,
-                    'created_at' => date('Y-m-d H:i:s'),
-                ];
-                $insertStatus = insert('tokenlogin', $dataInsert);
+                ///Nếu role_id = 1 <==> Admin
+                if ($roleId == '1') {
+                    //Tạo token login
+                    $tokenLogin = sha1(uniqid() . time());
+                    //Insert vào bảng tokenlogin
+                    $dataInsert = [
+                        'user_id' => $userId,
+                        'token' => $tokenLogin,
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ];
+                    $insertStatus = insert('tokenlogin', $dataInsert);
 
-                if ($insertStatus) {
-                    //insert thành công
-                    //lưu token login vào session
-                    setSession('tokenlogin', $tokenLogin);
-                    redirect('?module=home&action=dashboard'); //Chuyển hướng đến trang dashboard sau khi đăng nhập thành công
-                } else {
-                    setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
+                    if ($insertStatus) {
+                        //insert thành công
+                        //lưu token login vào session
+                        setSession('tokenlogin', $tokenLogin);
+                        redirect('?module=home&action=dashboard'); //Chuyển hướng đến trang dashboard sau khi đăng nhập thành công
+                    } else {
+                        setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
+                        setFlashData('msg_type', 'danger');
+                    }
+                    //Nếu role_id = 2 <==> User
+                } elseif ($roleId == '2') {
+                    setFlashData('msg', 'Bạn không có quyền truy cập.');
                     setFlashData('msg_type', 'danger');
+                    redirect('?module=authen&action=login');
                 }
             } else {
                 setFlashData('msg', 'Mật khẩu không chính xác.');

@@ -14,6 +14,7 @@ $data = [
 if (isPost()) {
 	$authen->login();
 }
+
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 ?>
@@ -30,11 +31,14 @@ $msg_type = getFlashData('msg_type');
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE ;?>/css/style_login.css">
+	<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/style_login.css">
 
 </head>
 
 <body>
+	<?php
+	layout('header', $data);
+	?>
 	<section class="ftco-section">
 		<div class="container">
 
@@ -63,15 +67,15 @@ $msg_type = getFlashData('msg_type');
 									<input type="password" class="form-control" placeholder="Password" name="password">
 								</div>
 								<div class="form-group">
-									<button type="submit" class="form-control btn btn-primary rounded submit px-3">Đăng
+									<button type="submit" class="form-control" style="color: #ffffff; background-color: #000000;">Đăng
 										nhập</button>
 								</div>
 								<div class="form-group d-md-flex">
 									<div class="w-50 text-md-right" style="padding-right: 73px">
 										<a href="?module=authen&action=forgot">Quên mật khẩu</a>
 									</div>
-									<div class="w-50 text-md-left"  style="padding-left: 49px;">
-										<p class="text-center">Chưa có tài khoản? <a data-toggle="tab"
+									<div class="w-50 text-md-left" style="padding-left: 49px;">
+										<p class="text-center">Chưa có tài khoản? <a
 												href="?module=authen&action=register">Đăng ký</a>
 										</p>
 									</div>
@@ -79,7 +83,7 @@ $msg_type = getFlashData('msg_type');
 								</div>
 								<style>
 									.form-group a:hover {
-										color: #E3B04B;
+										color: #e53637;
 
 									}
 								</style>
@@ -91,12 +95,9 @@ $msg_type = getFlashData('msg_type');
 				</div>
 			</div>
 	</section>
-
-	<script src="js/jquery.min.js"></script>
-	<script src="js/popper.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/main.js"></script>
-
+	<?php
+	layout('footer', $data);
+	?>
 </body>
 
 </html>

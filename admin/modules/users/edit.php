@@ -265,16 +265,7 @@ if ($userDetails) {
                                 </div>
                             </form>
                             <hr>
-                            <div class="text-center">
-                                <a class="small" href="?module=authen&action=forgot">Quên mật khẩu?</a>
-                            </div>
-                            <div class=" text-center">
-                                <a class="small" href="?module=authen&action=login">Đã có tài khoản? Hãy
-                                    đăng nhập!</a>
-                            </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
