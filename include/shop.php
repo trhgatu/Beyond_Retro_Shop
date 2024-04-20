@@ -11,7 +11,7 @@ $data = [
     'pageTitle' => 'Shop',
 ];
 //Kiểm tra trạng thái đăng nhập
-if (!isLogin()) {
+if (!isUserLogin()) {
     redirect('../user/?module=authen&action=login');
 }
 ?>
@@ -27,11 +27,10 @@ if (!isLogin()) {
 </head>
 
 <body>
-
     <?php
     layout('header', $data);
+    layout('search', $data);
     ?>
-
     <section class="breadcrumb-option">
         <div class="container">
             <div class="row">
@@ -47,8 +46,6 @@ if (!isLogin()) {
             </div>
         </div>
     </section>
-
-
     <!-- Shop Section Begin -->
     <section class="shop spad">
         <div class="container">
@@ -56,11 +53,13 @@ if (!isLogin()) {
                 <div class="col-lg-3">
                     <div class="shop__sidebar">
                         <div class="shop__sidebar__search">
-                            <form action="#">
-                                <input type="text" placeholder="Search...">
+                            <form method="GET">
+                                <input type="text" placeholder="Tìm kiếm..." name="query">
                                 <button type="submit"><span class="icon_search"></span></button>
                             </form>
                         </div>
+                        <?php
+                        ?>
                         <div class="shop__sidebar__accordion">
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
@@ -70,7 +69,6 @@ if (!isLogin()) {
                                     <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <div class="shop__sidebar__categories">
-
                                                 <ul class="nice-scroll">
                                                     <?php
                                                     $categories = new Category($conn);
@@ -84,7 +82,6 @@ if (!isLogin()) {
                                                                 </a></li>
                                                             <?php
                                                         endforeach;
-
                                                     endif;
                                                     ?>
 
@@ -95,23 +92,7 @@ if (!isLogin()) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
-                                    </div>
-                                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__brand">
-                                                <ul>
-                                                    <li><a href="#">Louis Vuitton</a></li>
-                                                    <li><a href="#">Chanel</a></li>
-                                                    <li><a href="#">Hermes</a></li>
-                                                    <li><a href="#">Gucci</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="card">
                                     <div class="card-heading">
                                         <a data-toggle="collapse" data-target="#collapseThree">Giá sản phẩm</a>
@@ -179,83 +160,113 @@ if (!isLogin()) {
                     <div class="row">
                         <?php
                         $product = new Product($conn);
-                        $listProducts = $product->listProduct();
-                        if (!empty($listProducts)):
-                            foreach ($listProducts as $item):
-                                ?>
-                                <div class="col-lg-4 col-md-6 col-sm-6">
-
-
-                                    <div class="product__item">
-                                        <div class="product__item__pic set-bg">
-                                            <img class="product__item__pic set-bg"
-                                                src="../images/products/<?php echo $item['thumbnail'] ?>">
-
+                        if (isset($_GET['query']) && !empty($_GET['query'])):
+                            $query = $_GET['query'];
+                            $searchResult = $product->searchProduct($query);
+                            if (!empty($searchResult)):
+                                foreach ($searchResult as $item):
+                                    ?>
+                                    <div class="col-lg-4 col-md-6 col-sm-6">
+                                        <div class="product__item">
+                                            <div class="product__item__pic set-bg">
+                                                <img class="product__item__pic set-bg"
+                                                    src="../images/products/<?php echo $item['thumbnail'] ?>">
+                                            </div>
+                                            <div class="product__item__title">
+                                                <a
+                                                    href="http://localhost/Beyond_Retro/include/shop-details.php?id=<?php echo $item['id']; ?>">
+                                                    <?php echo $item['name'] ?>
+                                                </a>
+                                            </div>
+                                            <div class="product__item__text">
+                                                <h5 style="font-weight: 700">
+                                                    <?php echo number_format($item['price'], 0, ',', '.') ?>₫
+                                                </h5>
+                                            </div>
                                         </div>
-                                        <div class="product__item__title">
-
-                                            <a href="#">
-                                                <?php echo $item['name'] ?>
-                                            </a>
-                                        </div>
-                                        <div class="product__item__text">
-                                            <h5 style="font-weight: 700">
-                                                <?php echo number_format($item['price'], 0, ',', '.') ?>₫
-                                            </h5>
-                                        </div>
-
-
                                     </div>
-
-                                </div>
+                                    <?php
+                                endforeach;
+                            else:
+                                ?>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-danger text-center">Không tìm thấy sản phẩm nào</div>
+                                </tr>
                                 <?php
-                            endforeach;
+                            endif;
                         else:
-                            ?>
-                            <tr>
-                                <td colspan="7">
-                                    <div class="alert alert-danger text-center">Không có sản phẩm nào</div>
-                            </tr>
-                            <?php
+                            $listProducts = $product->listProductPagination();
+                            if (!empty($listProducts)):
+                                foreach ($listProducts as $item):
+                                    ?>
+                                    <div class="col-lg-4 col-md-6 col-sm-6">
+                                        <div class="product__item">
+                                            <div class="product__item__pic set-bg">
+                                                <img class="product__item__pic set-bg"
+                                                    src="../images/products/<?php echo $item['thumbnail'] ?>">
+                                            </div>
+                                            <div class="product__item__title">
+                                                <a
+                                                    href="http://localhost/Beyond_Retro/include/shop-details.php?id=<?php echo $item['id']; ?>">
+                                                    <?php echo $item['name'] ?>
+                                                </a>
+                                            </div>
+                                            <div class="product__item__text">
+                                                <h5 style="font-weight: 700">
+                                                    <?php echo number_format($item['price'], 0, ',', '.') ?>₫
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                endforeach;
+                            else:
+                                ?>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-danger text-center">Không có sản phẩm nào</div>
+                                </tr>
+                                <?php
+                            endif;
                         endif;
                         ?>
-
                     </div>
-
-
                     <div class="row">
                         <div class="col-lg-12">
+                            <?php
+                            $items_per_page = 6;
+                            $sql_total = "SELECT COUNT(*) AS total FROM product";
+                            $stmt_total = $conn->query($sql_total);
+                            $total = $stmt_total->fetch(PDO::FETCH_ASSOC)['total'];
+                            $total_pages = ceil($total / $items_per_page);
+                            ?>
                             <div class="product__pagination">
-                                <a class="active" href="#">1</a>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <span>...</span>
-                                <a href="#">21</a>
+                                <?php
+                                for ($i = 1; $i <= $total_pages; $i++) {
+                                    $active_class = isset($_GET['page']) && $_GET['page'] == $i ? 'active' : '';
+                                    ?>
+                                    <a href="?page=<?php echo $i ?>"
+                                        class="<?php echo $active_class ?>"><?php echo $i ?></a>
+                                    <?php
+                                }
+                                ?>
                             </div>
+
                         </div>
                     </div>
+
                 </div>
-            </div>
-        </div>
     </section>
     <!-- Shop Section End -->
 
     <!-- Footer Section Begin -->
 
     <?php
-    layout('footer',$data);
+    layout('footer', $data);
+    layout('search', $data);
     ?>
 
-    <!-- Search Begin -->
-    <div class="search-model">
-        <div class="h-100 d-flex align-items-center justify-content-center">
-            <div class="search-close-switch">+</div>
-            <form class="search-model-form">
-                <input type="text" id="search-input" placeholder="Search here.....">
-            </form>
-        </div>
-    </div>
-    <!-- Search End -->
 
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>

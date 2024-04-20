@@ -1,10 +1,11 @@
 <?php
 session_start();
-require_once("config.php");
-require_once("../db_function/connect.php");
-require_once("../db_function/functions.php");
-require_once("../db_function/database.php");
-require_once("../db_function/session.php");
+require_once ("config.php");
+require_once ("../db_function/connect.php");
+require_once ("../db_function/functions.php");
+require_once ("../db_function/database.php");
+require_once ("../db_function/session.php");
+
 $module = _MODULE;
 $action = _ACTION;
 
@@ -20,7 +21,7 @@ if (!empty($_GET['action'])) {
 }
 $path = 'modules/' . $module . '/' . $action . '.php';
 if (file_exists($path)) {
-    require_once($path);
+    require_once ($path);
 } else {
-    require_once('modules/error/404.php');
+    require_once ('modules/error/404.php');
 }

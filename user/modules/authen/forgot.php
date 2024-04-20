@@ -62,8 +62,6 @@ $msg_type = getFlashData('msg_type');
                                 </button>
                                 <hr>
                             </form>
-
-
                         </div>
                     </div>
                 </div>

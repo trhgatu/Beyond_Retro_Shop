@@ -8,10 +8,10 @@ require_once ("../db_function/session.php");
 require_once '../class/product.php';
 require_once '../class/category.php';
 $data = [
-    'pageTitle' => 'Shop'
+    'pageTitle' => 'About'
 ];
 //Kiểm tra trạng thái đăng nhập
-if (!isLogin()) {
+if (!isUserLogin()) {
     redirect('../user/?module=authen&action=login');
 }
 ?>
@@ -24,23 +24,22 @@ if (!isLogin()) {
     <meta name="keywords" content="Male_Fashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Male-Fashion | Template</title>
 </head>
 
 <body>
 
-<?php
-    layout('header',$data);
+    <?php
+    layout('header', $data);
     ?>
     <section class="breadcrumb-option">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb__text">
-                        <h4>About Us</h4>
+                        <h4>About</h4>
                         <div class="breadcrumb__links">
                             <a href="./index.html">Home</a>
-                            <span>About Us</span>
+                            <span>About</span>
                         </div>
                     </div>
                 </div>
@@ -62,14 +61,15 @@ if (!isLogin()) {
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-6">
                     <div class="about__item">
-                        <h4>Who We Are ?</h4>
-                        <p>Contextual advertising programs sometimes have strict policies that need to be adhered too.
-                            Let’s take Google as an example.</p>
+                        <h4>About Me</h4>
+                        <p>Một sinh viên Trường đại học Công thương HUIT - Trần Hoàng Anh Tú - MSSV: 2001210084,
+                            người thực hiện dự án Web bán quần áo second hand - Beyond Retro.
+                        </p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6">
                     <div class="about__item">
-                        <h4>Who We Do ?</h4>
+                        <h4>About Shop</h4>
                         <p>In this digital generation where information can be easily obtained within seconds, business
                             cards still have retained their importance.</p>
                     </div>
@@ -93,22 +93,22 @@ if (!isLogin()) {
                 <div class="col-lg-6 p-0">
                     <div class="testimonial__text">
                         <span class="icon_quotations"></span>
-                        <p>“Going out after work? Take your butane curling iron with you to the office, heat it up,
-                            style your hair before you leave the office and you won’t have to make a trip back home.”
+                        <p>“Đi nhanh cũng được, chậm cũng được, quan trọng là đừng trễ deadline.”
                         </p>
                         <div class="testimonial__author">
                             <div class="testimonial__author__pic">
-                                <img src="img/about/testimonial-author.jpg" alt="">
+                                <img src="../img/about/me.png" alt="">
                             </div>
                             <div class="testimonial__author__text">
-                                <h5>Augusta Schultz</h5>
-                                <p>Fashion Design</p>
+                                <h5>Trần Hoàng Anh Tú</h5>
+                                <p>Developer</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 p-0">
-                    <div class="testimonial__pic set-bg" data-setbg="img/about/testimonial-pic.jpg"></div>
+                    <img class="testimonial__pic set-bg" src="../img/about/testimonial-pic.jpg">
+
                 </div>
             </div>
         </div>
@@ -169,40 +169,21 @@ if (!isLogin()) {
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="team__item">
-                        <img src="img/about/team-1.jpg" alt="">
-                        <h4>John Smith</h4>
+                        <img src="../img/about/me.png" alt="">
+                        <h4>Trần Hoàng Anh Tú</h4>
                         <span>Fashion Design</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="team__item">
-                        <img src="img/about/team-2.jpg" alt="">
-                        <h4>Christine Wise</h4>
-                        <span>C.E.O</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="team__item">
-                        <img src="img/about/team-3.jpg" alt="">
-                        <h4>Sean Robbins</h4>
                         <span>Manager</span>
+
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="team__item">
-                        <img src="img/about/team-4.jpg" alt="">
-                        <h4>Lucy Myers</h4>
-                        <span>Delivery</span>
-                    </div>
-                </div>
+
+
             </div>
         </div>
     </section>
-    <!-- Team Section End -->
 
-    <!-- Client Section Begin -->
     <section class="clients spad">
         <div class="container">
             <div class="row">
@@ -214,100 +195,31 @@ if (!isLogin()) {
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-1.png" alt=""></a>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-6">
+                    <a href="#" class="client__item"></a>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-2.png" alt=""></a>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-6">
+                    <a href="#" class="client__item"></a>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-3.png" alt=""></a>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="team__item">
+                        <img src="../img/clients/thay.JPG" alt="">
+                        <h4>Đinh Nguyễn Trọng Nghĩa</h4>
+                        <span>Client</span>
+
+                    </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-4.png" alt=""></a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-5.png" alt=""></a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-6.png" alt=""></a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-7.png" alt=""></a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"><img src="img/clients/client-8.png" alt=""></a>
-                </div>
+
+
             </div>
         </div>
     </section>
     <!-- Client Section End -->
 
     <!-- Footer Section Begin -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="footer__about">
-                        <div class="footer__logo">
-                            <a href="#"><img src="img/footer-logo.png" alt=""></a>
-                        </div>
-                        <p>The customer is at the heart of our unique business model, which includes design.</p>
-                        <a href="#"><img src="img/payment.png" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
-                    <div class="footer__widget">
-                        <h6>Shopping</h6>
-                        <ul>
-                            <li><a href="#">Clothing Store</a></li>
-                            <li><a href="#">Trending Shoes</a></li>
-                            <li><a href="#">Accessories</a></li>
-                            <li><a href="#">Sale</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
-                    <div class="footer__widget">
-                        <h6>Shopping</h6>
-                        <ul>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivary</a></li>
-                            <li><a href="#">Return & Exchanges</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
-                    <div class="footer__widget">
-                        <h6>NewLetter</h6>
-                        <div class="footer__newslatter">
-                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
-                            <form action="#">
-                                <input type="text" placeholder="Your email">
-                                <button type="submit"><span class="icon_mail_alt"></span></button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="footer__copyright__text">
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                        <p>Copyright ©
-                            <script>
-                                document.write(new Date().getFullYear());
-                            </script>2020
-                            All rights reserved | This template is made with <i class="fa fa-heart-o"
-                                aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                        </p>
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php
+    layout('footer', $data);
+    ?>
     <!-- Footer Section End -->
 
     <!-- Search Begin -->

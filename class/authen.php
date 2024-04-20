@@ -37,22 +37,22 @@ class Authen
             getMSG('Liên kết không tồn tại hoặc đã hết hạn.', 'danger');
         }
     }
-    public static function login()
+
+    public static function login_user()
     {
         $filterAll = filter();
         if (!empty(trim($filterAll['email'])) && !empty(trim($filterAll['password']))) {
             $email = $filterAll['email'];
             $password = $filterAll['password'];
 
-            $userQuery = oneRaw("SELECT password, id FROM user WHERE email = '$email'");
+            $userQuery = oneRaw("SELECT id, password, role_id FROM user WHERE email = '$email'");
 
             if (!empty($userQuery)) {
                 $passwordHash = $userQuery['password'];
                 $userId = $userQuery['id'];
+
                 if (password_verify($password, $passwordHash)) {
-                    //Tạo token login
                     $tokenLogin = sha1(uniqid() . time());
-                    //Insert vào bảng tokenlogin
                     $dataInsert = [
                         'user_id' => $userId,
                         'token' => $tokenLogin,
@@ -61,10 +61,8 @@ class Authen
                     $insertStatus = insert('tokenlogin', $dataInsert);
 
                     if ($insertStatus) {
-                        //insert thành công
-                        //lưu token login vào session
+                        setSession('user_id', $userId);
                         setSession('tokenlogin', $tokenLogin);
-                        redirect('/Beyond_Retro/include/');
                     } else {
                         setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
                         setFlashData('msg_type', 'danger');
@@ -81,14 +79,75 @@ class Authen
             setFlashData('msg', 'Vui lòng nhập email và mật khẩu.');
             setFlashData('msg_type', 'danger');
         }
+        redirect('http://localhost/Beyond_Retro/include/');
+    }
+    public static function login_admin()
+    {
+        $filterAll = filter();
+        if (!empty(trim($filterAll['email'])) && !empty(trim($filterAll['password']))) {
+            $email = $filterAll['email'];
+            $password = $filterAll['password'];
+
+            $userQuery = oneRaw("SELECT id, password, role_id FROM user WHERE email = '$email'");
+
+            if (!empty($userQuery)) {
+                $passwordHash = $userQuery['password'];
+                $userId = $userQuery['id'];
+                $roleId = $userQuery['role_id'];
+
+                $roleQuery = oneRaw("SELECT name FROM role WHERE id = $roleId");
+                $userRole = $roleQuery['name'];
+
+                if (password_verify($password, $passwordHash)) {
+                    $tokenLogin = sha1(uniqid() . time());
+                    $dataInsert = [
+                        'user_id' => $userId,
+                        'token' => $tokenLogin,
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ];
+                    if ($userRole == 'Admin') {
+                        $insertStatus = insert('tokenlogin_admin', $dataInsert);
+                        if ($insertStatus) {
+                            setSession('user_id', $userId);
+                            setSession('tokenlogin_admin', $tokenLogin);
+                            redirect('?module=home&action=dashboard');
+                        } else {
+                            setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
+                            setFlashData('msg_type', 'danger');
+                        }
+
+                    } else if ($userRole == 'User') {
+                        setFlashData('msg', 'Bạn không có quyền truy cập.');
+                        setFlashData('msg_type', 'danger');
+                    }
+
+                } else {
+                    setFlashData('msg', 'Mật khẩu không chính xác.');
+                    setFlashData('msg_type', 'danger');
+                }
+            } else {
+                setFlashData('msg', 'Email không tồn tại.');
+                setFlashData('msg_type', 'danger');
+            }
+        } else {
+            setFlashData('msg', 'Vui lòng nhập email và mật khẩu.');
+            setFlashData('msg_type', 'danger');
+        }
         redirect('?module=authen&action=login');
     }
-    public static function logout()
+    public static function logout_user()
     {
         $token = getSession('tokenlogin');
         delete('tokenlogin', "token='$token'");
         removeSession('tokenlogin');
         redirect('http://localhost/Beyond_Retro/include/');
+    }
+    public static function logout_admin()
+    {
+        $token = getSession('tokenlogin_admin');
+        delete('tokenlogin_admin', "token='$token'");
+        removeSession('tokenlogin_admin');
+        redirect('?module=authen&action=login');
     }
     public static function register()
     {

@@ -6,6 +6,9 @@ require_once '../class/user.php';
 $data = [
     'pageTitle' => 'Thêm người dùng'
 ];
+if (!isAdminLogin()) {
+    redirect('?module=authen&action=login');
+}
 $user = new User($conn);
 
 if (isPost()) {

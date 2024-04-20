@@ -79,7 +79,7 @@ class User
     }
     public function showProfile()
     {
-        if (isLogin()) {
+        if (isUserLogin()) {
             // Lấy token từ session
             $token = getSession('tokenlogin');
 
@@ -110,7 +110,4 @@ class User
         }
         return null; // Trả về null nếu không tìm thấy thông tin người dùng
     }
-
-
-
 }

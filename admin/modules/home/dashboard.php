@@ -6,6 +6,10 @@ $data = [
     'pageTitle' => 'Dashboard'
 ];
 //Kiểm tra trạng thái đăng nhập
+if (!isAdminLogin()) {
+    redirect('?module=authen&action=login');
+}
+
 
 ?>
 <div id="wrapper">

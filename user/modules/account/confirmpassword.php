@@ -11,7 +11,6 @@ if (!isset($_SESSION['tokenlogin'])) {
     exit;
 }
 if (isPost()) {
-
     $account = new Account($conn);
     $account->confirmPassword();
 }
@@ -19,8 +18,6 @@ if (isPost()) {
 
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
-$session = getSession();
-var_dump($session);
 ?>
 
 <?php

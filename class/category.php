@@ -29,7 +29,7 @@ class Category
 
 
         $filterAll = filter();
-        if (!empty ($filterAll['id'])) {
+        if (!empty($filterAll['id'])) {
             $categoryId = $filterAll['id'];
             $categoryDetail = getRaw("SELECT * FROM category WHERE id = $categoryId");
             if ($categoryDetail > 0) {
@@ -52,7 +52,8 @@ class Category
         redirect('?module=category&action=list');
     }
 
-    public function listCategories(){
+    public function listCategories()
+    {
         $categories = array();
 
         $query = "SELECT * FROM category";
@@ -63,7 +64,7 @@ class Category
                 $categories[] = $row;
             }
         }
-        return  $categories;
+        return $categories;
 
     }
 

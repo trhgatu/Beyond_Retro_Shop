@@ -3,12 +3,18 @@ $data = [
     'pageTitle' => 'Tài khoản',
 ];
 require_once '../class/user.php';
+require_once '../class/account.php';
 $user = new User($conn);
-if (!isset($_SESSION['tokenlogin'])) {
-    header("Location: ../user/?module=authen&action=login");
-    exit;
+$account = new Account($conn);
+
+if (!isUserLogin()) {
+    redirect('../user/?module=authen&action=login');
+}
+if (isPost()) {
+    $account->updateInfo();
 }
 $profileUser = $user->showProfile();
+
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 $error = getFlashData('error');
@@ -27,6 +33,7 @@ layout('header', $data);
                         <?php
                         if (!empty($profileUser)):
                             ?>
+                            <h4 class="align-items-center text-center" style="padding-top: 10px; padding-bottom: 20px;">Tài khoản của tôi</h4>
                             <div class="d-flex flex-column align-items-center text-center">
                                 <img src="../images/avatar/<?php echo $profileUser['avatar'] ?>" alt="Admin"
                                     class="rounded-circle p-1 bg-primary" width="110">
@@ -83,35 +90,40 @@ layout('header', $data);
                 </div>
                 <div class="col-lg-8">
                     <div class="card">
+                        <?php
+                        if (!empty($msg)) {
+                            getMSG($msg, $msg_type);
+                        }
+                        ?>
                         <form class="user" method="post">
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-sm-9 text-secondary">
-                                    <div class="col-sm-3 ">
-                                        <h6 class="mb-0">Ảnh đại diện</h6>
-                                    </div>
-                                    <div class="avatar" style="padding-bottom: 15px">
-                                        <img src="../images/avatar/<?php echo $profileUser['avatar'] ?>" alt="Admin"
-                                            class="rounded-circle p-1 bg-primary" width="110" id="ShowImage" style="max-width: 110px; max-height:110px;">
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-sm-9 text-secondary">
+                                        <div class="col-sm-3 ">
+                                            <h6 class="mb-0">Ảnh đại diện</h6>
+                                        </div>
+                                        <div class="avatar" style="padding-bottom: 15px">
+                                            <img src="../images/avatar/<?php echo $profileUser['avatar'] ?>" alt="Admin"
+                                                class="rounded-circle p-1 bg-primary" width="110" id="ShowImage"
+                                                style="max-width: 110px; max-height:110px;">
 
 
-                                    </div>
-                                    <div class="avatar-input">
-                                        <input type="file" id="avatar" name="avatar"  onchange="readURL(this);">
+                                        </div>
+                                        <div class="avatar-input">
+                                            <input type="file" id="avatar" name="avatar" onchange="readURL(this);">
 
-                                        <label for="avatar" class="avatar-input-label">Chọn ảnh</label>
-                                    </div>
-                                    <style>
-                                        #ShowImage {
+                                            <label for="avatar" class="avatar-input-label">Chọn ảnh</label>
+                                        </div>
+                                        <style>
+                                            #ShowImage {
                                                 box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
                                                 width: 110px;
                                                 height: 110px;
                                                 max-width: 100%;
 
                                             }
-
-                                    </style>
-                                    <script>
+                                        </style>
+                                        <script>
                                             function readURL(input) {
                                                 if(input.files && input.files[0]) {
                                                     var reader = new FileReader();
@@ -125,78 +137,80 @@ layout('header', $data);
                                                 }
                                             }
                                         </script>
+                                    </div>
                                 </div>
-                            </div>
-                            <style>
-                                .avatar-input {
-                                    display: inline-block;
-                                    position: relative;
-                                }
+                                <style>
+                                    .avatar-input {
+                                        display: inline-block;
+                                        position: relative;
+                                    }
 
-                                .avatar-input input[type="file"] {
-                                    position: absolute;
-                                    top: 0;
-                                    left: 0;
-                                    width: 100%;
-                                    height: 100%;
-                                    opacity: 0;
-                                    cursor: pointer;
-                                }
+                                    .avatar-input input[type="file"] {
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                        opacity: 0;
+                                        cursor: pointer;
+                                    }
 
-                                .avatar-input-label {
-                                    display: inline-block;
-                                    padding: 10px 20px;
-                                    border: 2px solid #ccc;
-                                    background-color: #f9f9f9;
-                                    cursor: pointer;
-                                    text-align: center;
-                                }
+                                    .avatar-input-label {
+                                        display: inline-block;
+                                        padding: 10px 20px;
+                                        border: 2px solid #ccc;
+                                        background-color: #f9f9f9;
+                                        cursor: pointer;
+                                        text-align: center;
+                                    }
 
-                                .avatar-input-label:hover {
-                                    background-color: #e3e3e3;
-                                }
-                            </style>
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Họ tên</h6>
+                                    .avatar-input-label:hover {
+                                        background-color: #e3e3e3;
+                                    }
+                                </style>
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">Họ tên</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <input type="text" class="form-control"
+                                            value="<?php echo $profileUser['fullname'] ?>" name="fullname">
+                                    </div>
                                 </div>
-                                <div class="col-sm-9 text-secondary">
-                                    <input type="text" class="form-control" value="<?php echo $profileUser['fullname'] ?>">
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">Email</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                        <p><b><?php echo $profileUser['email'] ?></b></p><a href="#">Thay đổi</a>
+                                    </div>
+
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Email</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                    <p><?php echo $profileUser['email'] ?></p><a href="#">Thay đổi</a>
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">Số điện thoại</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                        <p><b><?php echo $profileUser['phone_number'] ?></b></p><a
+                                            href="?module=account&action=phone">Thay đổi</a>
+                                    </div>
                                 </div>
 
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Số điện thoại</h6>
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">Địa chỉ</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                        <p><b><?php echo $profileUser['address'] ?></b></p><a href="?module=address&action=list">Cập nhật</a>
+                                    </div>
                                 </div>
-                                <div class="col-sm-9 text-secondary d-flex justify-content-between" >
-                                <p><?php echo $profileUser['phone_number'] ?></p><a href="?module=account&action=phone">Thay đổi</a>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Địa chỉ</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                    <p><?php echo $profileUser['address'] ?></p><a href="#">Cập nhật</a>
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <button class="btn btn-primary px-4" type="submit">Lưu</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-3"></div>
-                                <div class="col-sm-9 text-secondary">
-                                    <button class="btn btn-primary px-4" type="submit">Lưu</button>
-                                </div>
-                            </div>
-                        </div>
                         </form>
                     </div>
 

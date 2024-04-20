@@ -7,7 +7,7 @@ require_once '../class/product.php';
 $data = [
     'pageTitle' => 'Thêm sản phẩm mới'
 ];
-
+$userRole = getSession('admin_role');
 $product = new Product($conn);
 
 if (isPost()) {

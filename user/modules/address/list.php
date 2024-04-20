@@ -2,28 +2,25 @@
 $data = [
     'pageTitle' => 'Tài khoản',
 ];
-require_once '../class/account.php';
 require_once '../class/user.php';
-
+require_once '../class/account.php';
 $user = new User($conn);
 $account = new Account($conn);
-
-$profileUser = $user->showProfile();
 if (!isset($_SESSION['tokenlogin'])) {
     header("Location: ../user/?module=authen&action=login");
     exit;
 }
-if (!isUserLogin()) {
-    redirect('?module=authen&action=login');
-}
-
 if (isPost()) {
-    $account->changePassword();
+    $account->updateInfo();
 }
+$profileUser = $user->showProfile();
+
+
 
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 $error = getFlashData('error');
+$old = getFlashData('old');
 ?>
 
 <?php
@@ -38,6 +35,7 @@ layout('header', $data);
                         <?php
                         if (!empty($profileUser)):
                             ?>
+                            <h4 class="align-items-center text-center" style="padding-top: 10px; padding-bottom: 20px;">Tài khoản của tôi</h4>
                             <div class="d-flex flex-column align-items-center text-center">
                                 <img src="../images/avatar/<?php echo $profileUser['avatar'] ?>" alt="Admin"
                                     class="rounded-circle p-1 bg-primary" width="110">
@@ -57,7 +55,7 @@ layout('header', $data);
                                 <li class="list-group-item align-items-center flex-wrap">
 
                                     <h6 class="mb-0">
-                                        <a href="?module=account&action=changepassword">
+                                        <a href="?module=account&action=confirmpassword">
                                             <img src="../img/password.png" style="width: 25px; height: 25px">
                                             Đổi mật khẩu
                                         </a>
@@ -81,6 +79,7 @@ layout('header', $data);
 
                                     <h6 class="mb-0">
                                         <a href="?module=authen&action=logout" class="btn btn-primary btn-danger">
+
                                             Đăng xuất
                                         </a>
                                     </h6>
@@ -93,46 +92,47 @@ layout('header', $data);
                 </div>
                 <div class="col-lg-8">
                     <div class="card">
-
+                        <?php
+                        if (!empty($msg)) {
+                            getMSG($msg, $msg_type);
+                        }
+                        ?>
                         <form class="user" method="post">
-                            <?php
-                            if (!empty($msg)) {
-                                getMSG($msg, $msg_type);
-                            }
-                            ?>
                             <div class="card-body">
                                 <div class="row mb-3">
+                                    <div class="col-sm-9 text-secondary">
+
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Mật khẩu mới</h6>
+                                        <h6 class="mb-0">Địa chỉ của tôi</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                        <input type="text" class="form-control" name="password"
-                                            placeholder="Nhập mật khẩu mới"></input>
+                                        <p></p><a href="?module=address&action=list" class="btn btn-danger" style="background-color:#e53637 ">Thêm địa chỉ mới</a>
                                     </div>
-                                    <?php
-                                    echo form_error('password', '<span class= "error">', '</span>', $error);
-
-                                    ?>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Nhập lại mật khẩu</h6>
+                                        <h6 class="mb-0">Địa chỉ</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                        <input type="text" class="form-control" name="password_confirm"
-                                            placeholder="Nhập lại mật khẩu mới"></input>
                                     </div>
-                                    <?php
-                                    echo form_error('password_confirm', '<span class= "error">', '</span>', $error);
+                                </div>
 
-                                    ?>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <button class="form-control" type="submit">Xác nhận</button>
+                                <div class="row mb-3">
+                                    <div class="col-sm-5">
+                                        <p style="font-weight : bold"><?php echo $profileUser['fullname'] ?> </br><?php echo $profileUser['phone_number'] ?></br><?php echo $profileUser['address'] ?></p>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary d-flex justify-content-between">
+                                        <p></p><a href="?module=address&action=list">Cập nhật</a>
                                     </div>
                                 </div>
+
                             </div>
                         </form>
                     </div>

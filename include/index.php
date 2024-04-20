@@ -1,5 +1,5 @@
 <?php
-$data =[
+$data = [
     'pageTitle' => 'Beyond Retro',
 ];
 ?>
@@ -34,14 +34,15 @@ $data =[
 <body>
     <?php
     session_start();
-    require_once("../user/config.php");
-    require_once("../db_function/connect.php");
-    require_once("../db_function/functions.php");
-    require_once("../db_function/database.php");
-    require_once("../db_function/session.php");
-    layout('header',$data);
-    layout('main',$data);
-    layout('menu',$data);
+    require_once ("../user/config.php");
+    require_once ("../db_function/connect.php");
+    require_once ("../db_function/functions.php");
+    require_once ("../db_function/database.php");
+    require_once ("../db_function/session.php");
+    layout('header', $data);
+    layout('search',$data);
+    layout('main', $data);
+    layout('menu', $data);
     layout('footer',$data);
     ?>
     <!-- Js Plugins -->

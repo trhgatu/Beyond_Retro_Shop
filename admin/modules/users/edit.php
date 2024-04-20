@@ -3,12 +3,12 @@
 if (!defined("_CODE")) {
     die("Access Denied !");
 }
+if (!isAdminLogin()) {
+    redirect('?module=authen&action=login');
+}
 $filterAll = filter();
 if (!empty($filterAll['id'])) {
     $userId = $filterAll['id'];
-    //Kiểm tra xem userid có tồn tại trong database
-    //Nếu tồn tại - lấy ra thông tin user
-    //Nếu không tồn tại - chuyển hướng về trang danh sách
     $userDetail = oneRaw("SELECT * FROM user WHERE id='$userId'");
     if (!empty($userDetail)) {
         //Tồn tại

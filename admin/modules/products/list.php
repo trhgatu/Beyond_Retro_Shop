@@ -94,20 +94,16 @@ $old = getFlashData('old');
                                                 </td>
                                                 <td>
                                                     <?php
-                                                    $product_id = $item['id']; // Lấy ID của sản phẩm
-                                                    $product = new Product($conn); // Khởi tạo một đối tượng Product
-                                                    $images = $product->getImagesByProductId($product_id); // Lấy danh sách hình ảnh bằng product_id
+                                                    $product_id = $item['id'];
+                                                    $product = new Product($conn);
+                                                    $images = $product->getImagesByProductId($product_id);
                                                     if ($images) {
                                                         foreach ($images as $image) {
-
-                                                            foreach ($images as $image) {
-                                                                $image_paths = explode(",", $image['images_path']);
-                                                                foreach ($image_paths as $image_path) {
-                                                                    // Hiển thị mỗi ảnh trong thẻ <img>
-                                                                    echo "<img src='../images/products/$image_path' style='width: 40%;'> ";
-                                                                }
+                                                            $image_paths = explode(",", $image['images_path']);
+                                                            foreach ($image_paths as $image_path) {
+                                                                // Hiển thị mỗi ảnh trong thẻ <img>
+                                                                echo "<img src='../images/products/$image_path' style='width: 40%;'> ";
                                                             }
-
                                                         }
                                                     } else {
                                                         echo "Không có hình ảnh cho sản phẩm này.";

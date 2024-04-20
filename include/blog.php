@@ -11,7 +11,7 @@ $data = [
     'pageTitle' => 'Blog'
 ];
 //Kiểm tra trạng thái đăng nhập
-if (!isLogin()) {
+if (!isUserLogin()) {
     redirect('../user/?module=authen&action=login');
 }
 ?>

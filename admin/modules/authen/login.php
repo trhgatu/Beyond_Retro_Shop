@@ -1,72 +1,16 @@
-<!-- Đăng nhập tài khoản -->
 <?php
 if (!defined("_CODE")) {
     die("Access Denied !");
 }
-
+require_once '../class/authen.php';
+$authen = new Authen($conn);
 $data = [
     'pageTitle' => 'Đăng nhập tài khoản'
 ];
-
-//Kiểm tra trạng thái đăng nhập
-if (isLogin()) {
-    redirect('?module=home&action=dashboard');
-}
-
 if (isPost()) {
-    $filterAll = filter();
-    if (!empty(trim($filterAll['email'])) && !empty(trim($filterAll['password']))) {
-        $email = $filterAll['email'];
-        $password = $filterAll['password'];
-
-        $userQuery = oneRaw("SELECT password, id, role_id FROM user WHERE email = '$email'");
-
-        if (!empty($userQuery)) {
-            $passwordHash = $userQuery['password'];
-            $userId = $userQuery['id'];
-            $roleId = $userQuery['role_id'];
-            if (password_verify($password, $passwordHash)) {
-                ///Nếu role_id = 1 <==> Admin
-                if ($roleId == '1') {
-                    //Tạo token login
-                    $tokenLogin = sha1(uniqid() . time());
-                    //Insert vào bảng tokenlogin
-                    $dataInsert = [
-                        'user_id' => $userId,
-                        'token' => $tokenLogin,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ];
-                    $insertStatus = insert('tokenlogin', $dataInsert);
-
-                    if ($insertStatus) {
-                        //insert thành công
-                        //lưu token login vào session
-                        setSession('tokenlogin', $tokenLogin);
-                        redirect('?module=home&action=dashboard'); //Chuyển hướng đến trang dashboard sau khi đăng nhập thành công
-                    } else {
-                        setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
-                        setFlashData('msg_type', 'danger');
-                    }
-                    //Nếu role_id = 2 <==> User
-                } elseif ($roleId == '2') {
-                    setFlashData('msg', 'Bạn không có quyền truy cập.');
-                    setFlashData('msg_type', 'danger');
-                    redirect('?module=authen&action=login');
-                }
-            } else {
-                setFlashData('msg', 'Mật khẩu không chính xác.');
-                setFlashData('msg_type', 'danger');
-            }
-        } else {
-            setFlashData('msg', 'Email không tồn tại.');
-            setFlashData('msg_type', 'danger');
-        }
-    } else {
-        setFlashData('msg', 'Vui lòng nhập email và mật khẩu.');
-        setFlashData('msg_type', 'danger');
-    }
-    redirect('?module=authen&action=login');
+    $authen->login_admin();
 }
+
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 ?>

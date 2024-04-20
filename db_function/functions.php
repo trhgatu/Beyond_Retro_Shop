@@ -12,12 +12,13 @@ use PHPMailer\PHPMailer\Exception;
 function layout_admin($layoutName = 'header', $data = [])
 {
     if (file_exists(_WEB_PATH_TEMPLATE . '/layout_admin/' . $layoutName . '.php')) {
-        require_once(_WEB_PATH_TEMPLATE . '/layout_admin/' . $layoutName . '.php');
+        require_once (_WEB_PATH_TEMPLATE . '/layout_admin/' . $layoutName . '.php');
     }
 }
-function layout($layoutName = 'header', $data=[]){
-    if(file_exists(_WEB_PATH_TEMPLATE . '/layout/' . $layoutName . '.php')){
-        require_once(_WEB_PATH_TEMPLATE . '/layout/' . $layoutName . '.php');
+function layout($layoutName = 'header', $data = [])
+{
+    if (file_exists(_WEB_PATH_TEMPLATE . '/layout/' . $layoutName . '.php')) {
+        require_once (_WEB_PATH_TEMPLATE . '/layout/' . $layoutName . '.php');
     }
 }
 function sendMail($to, $subject, $content)
@@ -170,24 +171,40 @@ function old($fileName, $oldData, $default = null)
     return (!empty($oldData[$fileName])) ? $oldData[$fileName] : $default;
 }
 //Hàm kiểm tra trạng thái đăng nhập
-function isLogin()
+function isUserLogin()
 {
     $checkLogin = false;
-
-    // Kiểm tra trạng thái đăng nhập
     if (getSession('tokenlogin')) {
         $tokenLogin = getSession('tokenlogin');
 
-        // Kiểm tra token giống trong cơ sở dữ liệu
         $queryToken = oneRaw("SELECT user_id FROM tokenlogin WHERE token = '$tokenLogin'");
-
         if (!empty($queryToken)) {
             $checkLogin = true;
         } else {
-            // Nếu token không tồn tại trong cơ sở dữ liệu, loại bỏ nó khỏi session
             removeSession('tokenlogin');
         }
     }
-
     return $checkLogin;
 }
+function isAdminLogin()
+{
+    $checkLogin = false;
+
+    // Kiểm tra sự tồn tại của token đăng nhập trong session
+    if (getSession('tokenlogin_admin')) {
+        $tokenLogin = getSession('tokenlogin_admin');
+
+        // Kiểm tra tính hợp lệ của token trong cơ sở dữ liệu
+        $queryToken = oneRaw("SELECT user_id FROM tokenlogin_admin WHERE token = '$tokenLogin'");
+        if (!empty($queryToken)) {
+            // Token hợp lệ, đánh dấu đăng nhập thành công
+            $checkLogin = true;
+        } else {
+            // Nếu token không hợp lệ, loại bỏ nó khỏi session
+            removeSession('tokenlogin_admin');
+        }
+    }
+    return $checkLogin;
+}
+
+

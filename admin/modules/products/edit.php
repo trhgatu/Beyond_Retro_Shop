@@ -1,6 +1,6 @@
 <?php
 if (!defined("_CODE")) {
-    die ("Access Denied !");
+    die("Access Denied !");
 }
 require_once '../class/product.php';
 
@@ -11,10 +11,10 @@ $data = [
 $product = new Product($conn); // Khởi tạo đối tượng Product và truyền kết nối cơ sở dữ liệu vào
 
 $filterAll = filter();
-if (!empty ($filterAll['id'])) {
+if (!empty($filterAll['id'])) {
     $productId = $filterAll['id'];
     $productDetail = oneRaw("SELECT * FROM product WHERE id='$productId'");
-    if (!empty ($productDetail)) {
+    if (!empty($productDetail)) {
         //Tồn tại
         setFlashData('product-detail', $productDetail);
     } else {
@@ -25,62 +25,18 @@ $data = [
     'pageTitle' => 'Sửa sản phẩm'
 ];
 if (isPost()) {
-    $filterAll = filter();
-    $error = [];
-    //Validate title: bắt buộc phải nhập
-    if (empty ($filterAll['name'])) {
-        $error['name']['required'] = 'Tên sản phẩm không được để trống.';
-    } else {
-        if (strlen($filterAll['name']) < 5) {
-            $error['name']['min'] = 'Tên sản phẩm phải có ít nhất 10 ký tự.';
-        }
-    }
-    //Validate giá: bắt buộc phải nhập, đúng định dạng số nguyên
-    if (empty ($filterAll['price'])) {
-        $error['price']['required'] = 'Giá không được để trống.';
-    } else {
-        if (!isNumberInt($filterAll['price'])) {
-            $error['price']['isNumberInt'] = 'Giá phải có giá trị là số nguyên.';
-        }
-    }
-    //Validate mô tả: bắt buộc phải nhập, > 50 ký tự
-    if (empty ($filterAll['description'])) {
-        $error['description']['required'] = 'Mô tả không được để trống.';
-    } else {
-        if (strlen($filterAll['description']) < 20) {
-            $error['description']['min'] = 'Mô tả phải có ít nhất 20 ký tự.';
-        }
-    }
-    if (empty ($error)) {
-        //gọi hàm update
-        $updateStatus = $product->updateProduct($dataUpdate);
-        if ($updateStatus){
-            setFlashData('msg', 'Cập nhật thông tin sản phẩm thành công.');
-            setFlashData('msg_type', 'success');
-            redirect('?module=products&action=list');
-        } else {
-            setFlashData('msg', 'Cập nhật thông tin sản phẩm thất bại, vui lòng thử lại.');
-            setFlashData('msg_type', 'danger');
-        }
-        redirect('?module=products&action=edit');
-    } else {
-        setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
-        setFlashData('msg_type', 'danger');
-        setFlashData('error', $error);
-        setFlashData('old', $filterAll);
-        redirect('?module=products&action=edit');
-    }
-    redirect('?module=products&action=edit&id=' . $productId);
+
+    $updateStatus = $product->updateProduct($dataUpdate);
 }
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 $error = getFlashData('error');
 $old = getFlashData('old');
 $productDetails = getFlashData('product-detail');
-
 if ($productDetails) {
     $old = $productDetails;
 }
+
 ?>
 <div id="wrapper">
     <?php
@@ -101,7 +57,7 @@ if ($productDetails) {
                                 <h1 class="h4 text-gray-900 mb-4">Sửa sản phẩm </h1>
                             </div>
                             <?php
-                            if (!empty ($msg)) {
+                            if (!empty($msg)) {
                                 getMSG($msg, $msg_type);
                             }
                             ?>
@@ -110,10 +66,9 @@ if ($productDetails) {
                                     <div class="col">
                                         <div class="form-group">
                                             <p>Tên sản phẩm:</p>
-                                            <input type="text" class="form-control form-control-user" name="name"
-                                                value="<?php
-                                                echo old('name', $old)
-                                                    ?>">
+                                            <input type="text" class="form-control form-control-user" name="name" value="<?php
+                                            echo old('name', $old)
+                                                ?>">
                                             <?php
                                             echo form_error('name', '<span class= "error">', '</span>', $error);
                                             ?>
@@ -142,7 +97,8 @@ if ($productDetails) {
                                         </div>
                                         <div class="form-group">
                                             <p>Giá sản phẩm:</p>
-                                            <input type="text" class="form-control form-control-user" name="price" value="<?php echo old('price', $old)?>">
+                                            <input type="text" class="form-control form-control-user" name="price"
+                                                value="<?php echo old('price', $old) ?>">
                                             <?php
                                             echo form_error('price', '<span class= "error">', '</span>', $error);
                                             ?>
@@ -152,16 +108,16 @@ if ($productDetails) {
                                             <p>Ảnh bìa:</p>
                                             <input type="file" class="form-control form-control-user" name="thumbnail"
                                                 onchange="readThumbnailURL(this);">
-                                            <?php if (!empty ($old['thumbnail'])): ?>
-                                                <img id="ShowImage" src="../images/products/<?php echo $old['thumbnail']; ?>"
-                                                    width="150" height="200" />
-                                            <?php else: ?>
-                                                <p>Không có hình ảnh bìa hiện tại.</p>
-                                            <?php endif; ?>
+
+                                            <img id="ShowImage"
+                                                src="../images/products/<?php echo $old['thumbnail']; ?>" width="150"
+                                                height="200" />
+
+
+
                                         </div>
                                         <div class="form-group">
                                             <?php
-                                            // Thực hiện truy vấn để lấy danh sách các ảnh từ bảng galery dựa trên product_id
                                             $stmt = $conn->prepare("SELECT images_path FROM galery WHERE product_id = :product_id");
                                             $stmt->bindParam(':product_id', $productId);
                                             $stmt->execute();
@@ -171,23 +127,40 @@ if ($productDetails) {
                                             <input type="file" class="form-control form-control-user"
                                                 onchange="readGalleryURL(this);" name="images_path[]" id="uploadInput"
                                                 multiple>
+
                                             <div id="imagePreview">
                                                 <?php
-                                                // Hiển thị các hình ảnh từ bảng galery
+                                                // Hiển thị các hình ảnh từ bảng gallery
                                                 if ($stmt->rowCount() > 0) {
                                                     foreach ($images as $image) {
-                                                        $image_paths = explode(",", $image['images_path']);
-                                                        foreach ($image_paths as $image_path) {
-                                                            // Hiển thị mỗi ảnh trong thẻ <img>
-                                                            echo "<img src='../images/products/$image_path' style='max-width: 180px;'> ";
+                                                        $old['images_path'] = explode(",", $image['images_path']);
+                                                        if(!empty($old['images_path'])){
+                                                            foreach ($old['images_path'] as $image_path) {
+                                                                ?>
+                                                                <img id="ShowImage" src="../images/products/<?php echo $image_path ?>"
+                                                                    width="150" height="200"/>
+                                                                <?php
+                                                            }
                                                         }
+
                                                     }
                                                 } else {
                                                     // Hiển thị một tin nhắn nếu không có ảnh nào được tìm thấy
                                                     echo "Không có ảnh nào trong thư viện.";
                                                 }
+
+                                                echo '<pre>';
+                                                var_dump($old);
+                                                echo '</pre>';
                                                 ?>
+
+
+
                                             </div>
+
+
+
+
                                         </div>
                                         <style>
                                             .img-preview {

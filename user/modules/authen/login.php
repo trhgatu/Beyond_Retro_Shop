@@ -8,11 +8,8 @@ $authen = new Authen($conn);
 $data = [
 	'pageTitle' => 'Đăng nhập tài khoản'
 ];
-
-//Kiểm tra trạng thái đăng nhập
-
 if (isPost()) {
-	$authen->login();
+	$authen->login_user();
 }
 
 $msg = getFlashData('msg');

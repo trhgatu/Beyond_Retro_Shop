@@ -6,7 +6,7 @@ $data = [
     'pageTitle' => 'Danh sách người dùng'
 ];
 //Kiểm tra trạng thái đăng nhập
-if (!isLogin()) {
+if (!isAdminLogin()) {
     redirect('?module=authen&action=login');
 }
 require_once '../class/user.php';

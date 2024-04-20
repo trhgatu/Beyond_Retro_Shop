@@ -36,8 +36,6 @@
     <script src="<?php echo _WEB_HOST_TEMPLATE; ?>/js/mixitup.min.js"></script>
     <script src="<?php echo _WEB_HOST_TEMPLATE; ?>/js/owl.carousel.min.js"></script>
     <script src="<?php echo _WEB_HOST_TEMPLATE; ?>/js/main.js"></script>
-
-
 </head>
 <!-- Header Section Begin -->
 <header class="header"
@@ -70,16 +68,15 @@
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     var menuItems = document.querySelectorAll('.header__menu.mobile-menu ul li a');
-
                     function setActiveMenuItem() {
-                        var currentPagePath = window.location.pathname; // Lấy phần đường dẫn của URL hiện tại
-                        var currentPageFileName = currentPagePath.split('/').pop(); // Lấy phần cuối của đường dẫn
+                        var currentPagePath = window.location.pathname;
+                        var currentPageFileName = currentPagePath.split('/').pop();
 
                         menuItems.forEach(function (menuItem) {
                             var menuItemPath = menuItem.getAttribute('href');
-                            var menuItemFileName = menuItemPath.split('/').pop(); // Lấy phần cuối của đường dẫn của mỗi mục menu
+                            var menuItemFileName = menuItemPath.split('/').pop();
 
-                            // Nếu phần cuối của đường dẫn của mục menu khớp với phần cuối của đường dẫn của URL hiện tại
+
                             if(currentPageFileName === menuItemFileName) {
                                 menuItem.classList.add('active');
                             } else {
@@ -88,20 +85,17 @@
                         });
                     }
 
-                    setActiveMenuItem(); // Kích hoạt một lần khi tài liệu được tải
+                    setActiveMenuItem();
 
-                    window.addEventListener('popstate', setActiveMenuItem); // Kích hoạt khi trang chuyển đổi
+                    window.addEventListener('popstate', setActiveMenuItem);
                 });
-
-
-
             </script>
             <div class="col-lg-3 col-md-3">
                 <div class="header__nav__option">
                     <a href="#" class="search-switch"><img src="../img/icon/search-icon.png" alt=""
                             style="width: 20px"></a>
                     <?php
-                    if (isLogin()) {
+                    if (isUserLogin()) {
                         ?>
                         <a href="../user/?module=account&action=profile" class="account-switch"><img
                                 src="../img/icon/user.png" alt="" style="width: 20px"></a>
@@ -113,22 +107,20 @@
                         <?php
                     }
                     ?>
-                    <a href="http://localhost/Beyond_Retro/include/shopping-cart.php"><img src="../img/icon/shopping-bag.png" style="width: 23px" alt="">
-                        <span>0</span></a>
-                    <div class="price">$0.00</div>
+                    <?php
+                    $cartCount = isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0;
+                    ?>
+                    <a href="http://localhost/Beyond_Retro/include/shopping-cart.php" class="cart-switch">
+                        <img src="../img/icon/shopping-bag.png" style="width: 23px" alt="">
+                        <span id="cart-count"><?php echo $cartCount ?></span>
+                    </a>
+
+
                 </div>
             </div>
             <div class="canvas__open"><i class="fa fa-bars"></i></div>
         </div>
 </header>
-<!-- Header Section End -->
-<!-- Search Begin -->
-<div class="search-model">
-    <div class="h-100 d-flex align-items-center justify-content-center">
-        <div class="search-close-switch">+</div>
-        <form class="search-model-form">
-            <input type="text" id="search-input" placeholder="Search here.....">
-        </form>
-    </div>
-</div>
-<!-- Search End -->
+<?php
+layout('search', $data)
+    ?>

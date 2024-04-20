@@ -7,7 +7,7 @@ $data = [
     'pageTitle' => 'Danh sách danh mục'
 ];
 //Kiểm tra trạng thái đăng nhập
-if (!isLogin()) {
+if (!isAdminLogin()) {
     redirect('?module=authen&action=login');
 }
 $category = new Category($conn);
