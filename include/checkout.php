@@ -10,7 +10,6 @@ require_once '../class/category.php';
 $data = [
     'pageTitle' => 'Thanh toán'
 ];
-//Kiểm tra trạng thái đăng nhập
 if (!isUserLogin()) {
     redirect('../user/?module=authen&action=login');
 }
@@ -47,7 +46,7 @@ if (!isUserLogin()) {
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb__text">
-                        <h4>Check Out</h4>
+                        <h4>Thanh toán</h4>
                         <div class="breadcrumb__links">
                             <a href="./index.html">Home</a>
                             <a href="http://localhost/Beyond_Retro/include/shop.php">Shop</a>

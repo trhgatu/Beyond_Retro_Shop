@@ -11,45 +11,7 @@ $userRole = getSession('admin_role');
 $product = new Product($conn);
 
 if (isPost()) {
-    $filterAll = filter();
-    $error = [];
-    //Validate name: bắt buộc phải nhập
-    if (empty ($filterAll['name'])) {
-        $error['name']['required'] = 'Tên sản phẩm không được để trống.';
-    } else {
-        $name = $filterAll['name'];
-        $sql = "SELECT * FROM product WHERE name = '$name'";
-        if (getRows($sql) > 0) {
-            $error['name']['unique'] = 'Sản phẩm đã tồn tại.';
-        }
-    }
-    //Validate giá: bắt buộc phải nhập, đúng định dạng số nguyên
-    if (empty ($filterAll['price'])) {
-        $error['price']['required'] = 'Giá không được để trống.';
-    } else {
-        if (!isNumberInt($filterAll['price'])) {
-            $error['price']['isNumberInt'] = 'Giá phải là số nguyên.';
-        }
-
-    }
-    //Validate mô tả: bắt buộc phải nhập, < 20 ký tự
-    if (empty ($filterAll['description'])) {
-        $error['description']['required'] = 'Mô tả không được để trống.';
-    } else {
-        if (strlen($filterAll['description']) < 20) {
-            $error['description']['min'] = 'Mô tả phải có ít nhất 50 ký tự.';
-        }
-    }
-
-    if (empty($error)) {
-        $product->addProduct($dataInsert);
-    } else {
-        setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
-        setFlashData('msg_type', 'danger');
-        setFlashData('error', $error);
-        setFlashData('old', $filterAll);
-        redirect('?module=products&action=add');
-    }
+    $product->addProduct($dataInsert);
 }
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');

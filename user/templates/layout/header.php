@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <html lang="zxx">
+<?php
+$current_url = $_SERVER['REQUEST_URI'];
+
+function echoActiveClass($requestUri)
+{
+    $current_file_name = basename($_SERVER['PHP_SELF'], ".php");
+    if ($current_file_name == $requestUri) {
+        echo 'class="active"';
+    }
+}
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -51,11 +62,10 @@
             <div class="col-lg-6 col-md-6">
                 <nav class="header__menu mobile-menu">
                     <ul>
-                        <li><a href="http://localhost/Beyond_Retro/include/index.php">Home</a></li>
-                        <li><a href="http://localhost/Beyond_Retro/include/shop.php">Shop</a></li>
-                        <li><a href="http://localhost/Beyond_Retro/include/about.php">Giới thiệu</a></li>
-                        <li><a href="http://localhost/Beyond_Retro/include/blog.php">Blog</a></li>
-                        <li><a href="http://localhost/Beyond_Retro/include/contact.php">Liên hệ</a></li>
+                        <li><a href="http://localhost/Beyond_Retro/include/index.php" <?php echoActiveClass("index"); ?>>Home</a></li>
+                        <li><a href="http://localhost/Beyond_Retro/include/shop.php?page=1" <?php echoActiveClass("shop"); ?>>Shop</a></li>
+                        <li><a href="http://localhost/Beyond_Retro/include/about.php" <?php echoActiveClass("about"); ?>>Giới thiệu</a></li>
+                        <li><a href="http://localhost/Beyond_Retro/include/contact.php" <?php echoActiveClass("contact"); ?>>Liên hệ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -65,31 +75,6 @@
                     color: #000;
                 }
             </style>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    var menuItems = document.querySelectorAll('.header__menu.mobile-menu ul li a');
-                    function setActiveMenuItem() {
-                        var currentPagePath = window.location.pathname;
-                        var currentPageFileName = currentPagePath.split('/').pop();
-
-                        menuItems.forEach(function (menuItem) {
-                            var menuItemPath = menuItem.getAttribute('href');
-                            var menuItemFileName = menuItemPath.split('/').pop();
-
-
-                            if(currentPageFileName === menuItemFileName) {
-                                menuItem.classList.add('active');
-                            } else {
-                                menuItem.classList.remove('active');
-                            }
-                        });
-                    }
-
-                    setActiveMenuItem();
-
-                    window.addEventListener('popstate', setActiveMenuItem);
-                });
-            </script>
             <div class="col-lg-3 col-md-3">
                 <div class="header__nav__option">
                     <a href="#" class="search-switch"><img src="../img/icon/search-icon.png" alt=""

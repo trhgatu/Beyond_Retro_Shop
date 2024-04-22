@@ -9,37 +9,73 @@ class Product
     public function addProduct($dataInsert)
     {
         $filterAll = filter();
-        $dataInsert = [
-            'name' => $filterAll['name'],
-            'category_id' => $filterAll['category_id'],
-            'price' => $filterAll['price'],
-            'thumbnail' => $filterAll['thumbnail'],
-            'description' => $filterAll['description'],
-            'created_at' => date('Y-m-d H:i:s'),
-        ];
-        $insertStatus = insert('product', $dataInsert);
-        if ($insertStatus) {
-            $productId = $this->conn->lastInsertId();
-            $dataImagesInsert = [
-                'product_id' => $productId,
-                'images_path' => implode(",", $filterAll['images_path']),
+        $error = [];
+        //Validate name: bắt buộc phải nhập
+        if (empty($filterAll['name'])) {
+            $error['name']['required'] = 'Tên sản phẩm không được để trống.';
+        } else {
+            $name = $filterAll['name'];
+            $sql = "SELECT * FROM product WHERE name = '$name'";
+            if (getRows($sql) > 0) {
+                $error['name']['unique'] = 'Sản phẩm đã tồn tại.';
+            }
+        }
+        //Validate giá: bắt buộc phải nhập, đúng định dạng số nguyên
+        if (empty($filterAll['price'])) {
+            $error['price']['required'] = 'Giá không được để trống.';
+        } else {
+            if (!isNumberInt($filterAll['price'])) {
+                $error['price']['isNumberInt'] = 'Giá phải là số nguyên.';
+            }
+
+        }
+        //Validate mô tả: bắt buộc phải nhập, < 20 ký tự
+        if (empty($filterAll['description'])) {
+            $error['description']['required'] = 'Mô tả không được để trống.';
+        } else {
+            if (strlen($filterAll['description']) < 20) {
+                $error['description']['min'] = 'Mô tả phải có ít nhất 50 ký tự.';
+            }
+        }
+
+        if (empty($error)) {
+            $dataInsert = [
+                'name' => $filterAll['name'],
+                'category_id' => $filterAll['category_id'],
+                'price' => $filterAll['price'],
+                'thumbnail' => $filterAll['thumbnail'],
+                'description' => $filterAll['description'],
                 'created_at' => date('Y-m-d H:i:s'),
             ];
-            $insertImageStatus = insert('galery', $dataImagesInsert);
-            if ($insertImageStatus) {
-                setFlashData('msg', 'Thêm sản phẩm mới thành công.');
-                setFlashData('msg_type', 'success');
-                redirect('?module=products&action=list');
+            $insertStatus = insert('product', $dataInsert);
+            if ($insertStatus) {
+                $productId = $this->conn->lastInsertId();
+                $dataImagesInsert = [
+                    'product_id' => $productId,
+                    'images_path' => implode(",", $filterAll['images_path']),
+                    'created_at' => date('Y-m-d H:i:s'),
+                ];
+                $insertImageStatus = insert('galery', $dataImagesInsert);
+                if ($insertImageStatus) {
+                    setFlashData('msg', 'Thêm sản phẩm mới thành công.');
+                    setFlashData('msg_type', 'success');
+                    redirect('?module=products&action=list');
+                } else {
+                    setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
+                    setFlashData('msg_type', 'danger');
+                }
+                redirect('?module=products&action=add');
             } else {
                 setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
                 setFlashData('msg_type', 'danger');
             }
-            redirect('?module=products&action=add');
         } else {
-            setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
+            setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
             setFlashData('msg_type', 'danger');
+            setFlashData('error', $error);
+            setFlashData('old', $filterAll);
+            redirect('?module=products&action=add');
         }
-
     }
     public function updateProduct($dataUpdate)
     {
@@ -226,5 +262,47 @@ class Product
         }
         return $products;
     }
+    public function filterProductByPrice($price_range)
+    {
+        if (strpos($price_range, '+') !== false) {
+            $min_price = 1500000;
+            $max_price = PHP_INT_MAX;
+        } else {
+            $price_parts = explode('-', $price_range);
+            $min_price = isset($price_parts[0]) ? $price_parts[0] : 0;
+            $max_price = isset($price_parts[1]) ? $price_parts[1] : PHP_INT_MAX;
+        }
+        $sql = "SELECT * FROM product WHERE price BETWEEN :min_price AND :max_price";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':min_price', $min_price);
+        $stmt->bindParam(':max_price', $max_price);
+        $stmt->execute();
+
+        $products = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $products[] = $row;
+        }
+        return $products;
+    }
+    // Trong file product.php
+    public function filterProductByCategory($category_id)
+    {
+        $sql = "SELECT * FROM product WHERE category_id = :category_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':category_id', $category_id);
+        $stmt->execute();
+
+        $products = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $products[] = $row;
+        }
+        return $products;
+    }
+
+
+
+
+
+
 
 }

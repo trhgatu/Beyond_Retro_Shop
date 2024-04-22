@@ -15,7 +15,7 @@ $data = [
 if (!isUserLogin()) {
     redirect('../user/?module=authen&action=login');
 }
-if(isPost()){
+if (isPost()) {
     $cart = new Cart($conn);
     $cart->addToCart();
 }
@@ -155,30 +155,33 @@ $productImages = $product->getImagesByProductId($productId);
                                             <input type="submit" name="addtocart" value="Thêm vào giỏ hàng" class="primary-btn">
                                         </div>
                                     </form>
-                                    <div class="product__details__btns__option">
-                                        <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-                                        <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
-                                    </div>
+
                                     <div class="product__details__last__option">
                                         <h5><span>Guaranteed Safe Checkout</span></h5>
                                         <img src="img/shop-details/details-payment.png" alt="">
                                         <ul>
-                                            <?php
-                                            $sql = "SELECT id, name FROM category";
-                                            $stmt = $conn->prepare($sql);
-                                            $stmt->execute();
-                                            $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                            foreach ($categories as $category) {
-                                                $categoryId = htmlspecialchars($category['id']);
-                                                $categoryName = htmlspecialchars($category['name']);
-                                                // Kiểm tra nếu categoryId trùng với giá trị trước đó của category_id
-                                                ?>
-                                                <li><span>Category:</span><?php echo $category['name'] ?> </li>
+                                            <ul>
                                                 <?php
+                                                $sql = "SELECT c.id, c.name FROM category c JOIN product p ON c.id = p.category_id WHERE p.id = :productId";
+                                                $stmt = $conn->prepare($sql);
+                                                $stmt->bindParam(':productId', $productId);
+                                                $stmt->execute();
+                                                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                                            }
-                                            ?>
+                                                foreach ($categories as $category) {
+
+                                                    $categoryId = htmlspecialchars($category['id']);
+                                                    $categoryName = htmlspecialchars($category['name']);
+                                                    ?>
+
+                                                    <li><span>Category: </span><?php echo $categoryName ?></li>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </ul>
+
                                         </ul>
+
                                     </div>
                                 </div>
                             </div>
