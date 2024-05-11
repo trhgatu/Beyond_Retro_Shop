@@ -18,8 +18,8 @@ if (!isUserLogin()) {
 if (isPost() && isset($_POST['update-cart'])) {
     $cart = new Cart($conn);
     $cart->updateCart();
-}
 
+}
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -56,14 +56,11 @@ if (isPost() && isset($_POST['update-cart'])) {
             </div>
         </div>
     </section>
-    <!-- Breadcrumb Section End -->
 
-    <!-- Shopping Cart Section Begin -->
     <form method="post">
         <section class="shopping-cart spad">
             <div class="container">
                 <div class="row">
-
                     <div class="col-lg-8">
                         <div class="shopping__cart__table">
                             <table>
@@ -90,7 +87,7 @@ if (isPost() && isset($_POST['update-cart'])) {
                                                 <tr>
                                                     <td class="product__cart__item">
                                                         <div class="product__cart__item__pic">
-                                                            <img src="../images/products/<?php echo $item['thumbnail']; ?>" alt=""
+                                                            <img src="../images/products/thumbnail/<?php echo $item['thumbnail']; ?>" alt=""
                                                                 style="max-width: 90px">
                                                         </div>
                                                         <div class="product__cart__item__text">
@@ -102,7 +99,8 @@ if (isPost() && isset($_POST['update-cart'])) {
                                                         <div class="quantity">
                                                             <div class="pro-qty-2"
                                                                 style="border: 1px solid #e5e5e5;position: relative;width: 55px">
-                                                                <input type="number" name="quantity[<?php echo $productId; ?>]" value="<?php echo $quantity; ?>">
+                                                                <input type="number" name="quantity[<?php echo $productId; ?>]"
+                                                                    value="<?php echo $quantity; ?>">
 
                                                             </div>
                                                         </div>
@@ -119,7 +117,6 @@ if (isPost() && isset($_POST['update-cart'])) {
                                                 $totalPrice += $item['price'] * $quantity;
                                                 }
                                                 ?>
-
                                             <?php
                                             }
                                         } else {
@@ -140,21 +137,22 @@ if (isPost() && isset($_POST['update-cart'])) {
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="continue__btn update__btn">
-                                    <input type="submit" value="Cập nhật giỏ hàng" class="primary-btn" name="update-cart">
+                                    <input type="submit" value="Cập nhật giỏ hàng" class="primary-btn"
+                                        name="update-cart">
 
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4">
-
                         <div class="cart__total">
                             <h6>Tổng giỏ hàng</h6>
                             <ul>
 
                                 <li>Tổng tiền<span><?php echo number_format($totalPrice, 0, ',', '.') ?>₫</span></li>
                             </ul>
-                            <a href="http://localhost/Beyond_Retro/include/checkout.php" class="primary-btn">Thanh toán</a>
+                            <a href="http://localhost/Beyond_Retro/include/checkout.php" class="primary-btn">Thanh
+                                toán</a>
                         </div>
 
 

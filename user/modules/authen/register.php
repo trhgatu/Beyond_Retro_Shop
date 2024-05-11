@@ -129,7 +129,6 @@ $old = getFlashData('old');
                                         ?>">
                                     <?php
                                     echo form_error('email', '<span class= "error">', '</span>', $error);
-
                                     ?>
                                 </div>
                                 <div class="form-group mb-3">

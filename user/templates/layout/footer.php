@@ -5,7 +5,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="footer__about">
                     <div class="footer__logo">
-                        <a href="#"><img src="../img/logo-footer.png" alt=""></a>
+                        <a href="http://localhost/Beyond_Retro/include/index.php"><img src="../img/logo-footer.png" alt=""></a>
                     </div>
 
                     <a href="#"><img src="../img/payment.png" alt=""></a>

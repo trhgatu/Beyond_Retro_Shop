@@ -176,7 +176,6 @@ function isUserLogin()
     $checkLogin = false;
     if (getSession('tokenlogin')) {
         $tokenLogin = getSession('tokenlogin');
-
         $queryToken = oneRaw("SELECT user_id FROM tokenlogin WHERE token = '$tokenLogin'");
         if (!empty($queryToken)) {
             $checkLogin = true;
@@ -186,25 +185,22 @@ function isUserLogin()
     }
     return $checkLogin;
 }
+
 function isAdminLogin()
 {
     $checkLogin = false;
-
-    // Kiểm tra sự tồn tại của token đăng nhập trong session
     if (getSession('tokenlogin_admin')) {
         $tokenLogin = getSession('tokenlogin_admin');
-
-        // Kiểm tra tính hợp lệ của token trong cơ sở dữ liệu
         $queryToken = oneRaw("SELECT user_id FROM tokenlogin_admin WHERE token = '$tokenLogin'");
         if (!empty($queryToken)) {
-            // Token hợp lệ, đánh dấu đăng nhập thành công
             $checkLogin = true;
         } else {
-            // Nếu token không hợp lệ, loại bỏ nó khỏi session
             removeSession('tokenlogin_admin');
         }
     }
     return $checkLogin;
 }
+
+
 
 

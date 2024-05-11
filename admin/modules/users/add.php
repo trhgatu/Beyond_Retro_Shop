@@ -56,10 +56,46 @@ if (isPost()) {
             $error['password_confirm']['match'] = 'Mật khẩu nhập lại không đúng.';
         }
     }
-
     if (empty($error)) {
-        //Gọi hàm addUser
-        $user->addUser($filterAll);
+        try {
+            if (empty($_FILES['avatar'])) {
+                throw new Exception('Invalid upload');
+            }
+            switch ($_FILES['avatar']['error']) {
+                case UPLOAD_ERR_OK;
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    throw new Exception('No file upload');
+                default:
+                    throw new Exception('An error occured');
+            }
+            if ($_FILES['avatar']['size'] > 1000000) {
+                throw new Exception('File too large');
+            }
+            $mime_types = ['image/png', 'image/jpeg', 'image/gif'];
+            $file_info = finfo_open(FILEINFO_MIME_TYPE);
+            $mime_type = finfo_file($file_info, $_FILES['avatar']['tmp_name']);
+
+            if (!in_array($mime_type, $mime_types)) {
+                throw new Exception('invalid file type');
+            }
+            $pathinfo = pathinfo($_FILES['avatar']['name']);
+            $fname = 'avatar';
+            $extension = $pathinfo['extension'];
+            $dest = '../images/avatar/' . $fname . '.' . $extension;
+            $i = 1;
+            while (file_exists($dest)) {
+                $dest = '../images/avatar/' . $fname . "-$i." . $extension;
+                $i++;
+            }
+            if (move_uploaded_file($_FILES['avatar']['tmp_name'], $dest)) {
+                $user->addUser($filterAll, $dest);
+            } else {
+                throw new Exception('Unable to move file');
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     } else {
         setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
         setFlashData('msg_type', 'danger');
@@ -93,9 +129,8 @@ $old = getFlashData('old');
                                 getMSG($msg, $msg_type);
                             } ?>
 
-                            <form class="user" method="post">
+                            <form method="post" enctype="multipart/form-data">
                                 <div class="row">
-
                                     <div class="col">
                                         <div class="form-group">
                                             <div class="avatar">
@@ -118,7 +153,6 @@ $old = getFlashData('old');
                                                     padding: 22px
                                                 }
                                             </style>
-
                                             <script>
                                                 function readURL(input) {
                                                     if(input.files && input.files[0]) {
@@ -154,11 +188,8 @@ $old = getFlashData('old');
                                                     ?>">
                                             <?php
                                             echo form_error('email', '<span class= "error">', '</span>', $error);
-
                                             ?>
                                         </div>
-
-
                                         <div class="form-group row">
                                             <div class="col-sm-6 mb-3 mb-sm-0">
                                                 <input type="text" class="form-control form-control-user"

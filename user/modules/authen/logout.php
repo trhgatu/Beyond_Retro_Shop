@@ -6,6 +6,6 @@ if (!defined("_CODE")) {
 require_once '../class/authen.php';
 $authen = new Authen($conn);
 if (isUserLogin()) {
-    $authen->logout_user();
+    $authen->logout_user($conn, $user_id);
 }
 ?>

@@ -6,157 +6,164 @@ class Product
     {
         $this->conn = $conn;
     }
-    public function addProduct($dataInsert)
+    public function uploadGallery($uploadedImages)
     {
-        $filterAll = filter();
-        $error = [];
-        //Validate name: bắt buộc phải nhập
-        if (empty($filterAll['name'])) {
-            $error['name']['required'] = 'Tên sản phẩm không được để trống.';
-        } else {
-            $name = $filterAll['name'];
-            $sql = "SELECT * FROM product WHERE name = '$name'";
-            if (getRows($sql) > 0) {
-                $error['name']['unique'] = 'Sản phẩm đã tồn tại.';
-            }
-        }
-        //Validate giá: bắt buộc phải nhập, đúng định dạng số nguyên
-        if (empty($filterAll['price'])) {
-            $error['price']['required'] = 'Giá không được để trống.';
-        } else {
-            if (!isNumberInt($filterAll['price'])) {
-                $error['price']['isNumberInt'] = 'Giá phải là số nguyên.';
-            }
+        $uploadedImagePaths = [];
+        foreach ($uploadedImages['tmp_name'] as $key => $tmp_name) {
+            try {
+                if ($uploadedImages['error'][$key] !== UPLOAD_ERR_OK) {
+                    throw new Exception('Upload error');
+                }
+                if ($uploadedImages['size'][$key] > 1000000) {
+                    throw new Exception('File too large');
+                }
 
-        }
-        //Validate mô tả: bắt buộc phải nhập, < 20 ký tự
-        if (empty($filterAll['description'])) {
-            $error['description']['required'] = 'Mô tả không được để trống.';
-        } else {
-            if (strlen($filterAll['description']) < 20) {
-                $error['description']['min'] = 'Mô tả phải có ít nhất 50 ký tự.';
+                $mime_types = ['image/png', 'image/jpeg', 'image/gif'];
+                $file_info = finfo_open(FILEINFO_MIME_TYPE);
+                $mime_type = finfo_file($file_info, $tmp_name);
+
+                if (!in_array($mime_type, $mime_types)) {
+                    throw new Exception('Invalid file type');
+                }
+
+                $pathinfo = pathinfo($uploadedImages['name'][$key]);
+                $fname = 'product_image_' . $key;
+                $extension = $pathinfo['extension'];
+                $dest = '../images/products/gallery/' . $fname . '.' . $extension;
+                $i = 1;
+                while (file_exists($dest)) {
+                    $dest = '../images/products/gallery/' . $fname . "-$i." . $extension;
+                    $i++;
+                }
+                if (move_uploaded_file($tmp_name, $dest)) {
+                    $uploadedImagePaths[] = $dest;
+                } else {
+                    throw new Exception('Unable to move file');
+                }
+            } catch (Exception $e) {
+                echo $e->getMessage();
             }
         }
+        return $uploadedImagePaths;
+    }
 
-        if (empty($error)) {
-            $dataInsert = [
-                'name' => $filterAll['name'],
-                'category_id' => $filterAll['category_id'],
-                'price' => $filterAll['price'],
-                'thumbnail' => $filterAll['thumbnail'],
-                'description' => $filterAll['description'],
-                'created_at' => date('Y-m-d H:i:s'),
-            ];
-            $insertStatus = insert('product', $dataInsert);
-            if ($insertStatus) {
-                $productId = $this->conn->lastInsertId();
+    public function uploadThumbnail()
+    {
+        if (empty($_FILES['thumbnail'])) {
+            throw new Exception('Invalid upload');
+        }
+        switch ($_FILES['thumbnail']['error']) {
+            case UPLOAD_ERR_OK;
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                throw new Exception('No file upload');
+            default:
+                throw new Exception('An error occured');
+        }
+        if ($_FILES['thumbnail']['size'] > 1000000) {
+            throw new Exception('File too large');
+        }
+        $mime_types = ['image/png', 'image/jpeg', 'image/gif'];
+        $file_info = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($file_info, $_FILES['thumbnail']['tmp_name']);
+
+        if (!in_array($mime_type, $mime_types)) {
+            throw new Exception('invalid file type');
+        }
+        $pathinfo = pathinfo($_FILES['thumbnail']['name']);
+        $fname = 'thumbnail';
+        $extension = $pathinfo['extension'];
+        $dest = '../images/products/thumbnail/' . $fname . '.' . $extension;
+        $i = 1;
+        while (file_exists($dest)) {
+            $dest = '../images/products/thumbnail/' . $fname . "-$i." . $extension;
+            $i++;
+        }
+        return $dest;
+    }
+    public function addProduct($filterAll, $dest, $upload_dest)
+    {
+        $dataInsert = [
+            'name' => $filterAll['name'],
+            'category_id' => $filterAll['category_id'],
+            'price' => $filterAll['price'],
+            'thumbnail' => basename($dest),
+            'description' => $filterAll['description'],
+            'created_at' => date('Y-m-d H:i:s'),
+            'flag' => $filterAll['flag'],
+            'new' => $filterAll['new'],
+            'bestseller' => $filterAll['bestseller'],
+        ];
+        $insertStatus = insert('product', $dataInsert);
+        if ($insertStatus) {
+            $productId = $this->conn->lastInsertId();
+            foreach ($upload_dest as $image_path) {
                 $dataImagesInsert = [
                     'product_id' => $productId,
-                    'images_path' => implode(",", $filterAll['images_path']),
+                    'images_path' => basename($image_path),
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 $insertImageStatus = insert('galery', $dataImagesInsert);
-                if ($insertImageStatus) {
-                    setFlashData('msg', 'Thêm sản phẩm mới thành công.');
-                    setFlashData('msg_type', 'success');
-                    redirect('?module=products&action=list');
-                } else {
-                    setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
-                    setFlashData('msg_type', 'danger');
-                }
-                redirect('?module=products&action=add');
-            } else {
-                setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
-                setFlashData('msg_type', 'danger');
             }
+            setFlashData('msg', 'Thêm sản phẩm mới thành công.');
+            setFlashData('msg_type', 'success');
+            redirect('?module=products&action=list');
         } else {
-            setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
+            setFlashData('msg', 'Thêm sản phẩm thất bại, vui lòng thử lại.');
             setFlashData('msg_type', 'danger');
-            setFlashData('error', $error);
-            setFlashData('old', $filterAll);
             redirect('?module=products&action=add');
         }
     }
-    public function updateProduct($dataUpdate)
-    {
-        $filterAll = filter();
-        $error = [];
-        //Validate title: bắt buộc phải nhập
-        if (empty($filterAll['name'])) {
-            $error['name']['required'] = 'Tên sản phẩm không được để trống.';
-        } else {
-            if (strlen($filterAll['name']) < 5) {
-                $error['name']['min'] = 'Tên sản phẩm phải có ít nhất 10 ký tự.';
-            }
-        }
-        //Validate giá: bắt buộc phải nhập, đúng định dạng số nguyên
-        if (empty($filterAll['price'])) {
-            $error['price']['required'] = 'Giá không được để trống.';
-        } else {
-            if (!isNumberInt($filterAll['price'])) {
-                $error['price']['isNumberInt'] = 'Giá phải có giá trị là số nguyên.';
-            }
-        }
-        //Validate mô tả: bắt buộc phải nhập, > 50 ký tự
-        if (empty($filterAll['description'])) {
-            $error['description']['required'] = 'Mô tả không được để trống.';
-        } else {
-            if (strlen($filterAll['description']) < 20) {
-                $error['description']['min'] = 'Mô tả phải có ít nhất 20 ký tự.';
-            }
-        }
-        $filterAll = filter();
-        $productId = $filterAll['id'];
 
+    public function updateProduct($filterAll, $dest, $upload_dest)
+    {
+        $productId = $filterAll['id'];
+        $new = isset($filterAll['new']) ? 1 : 0;
+        $flag = isset($filterAll['flag']) ? 1 : 0;
+        $bestseller = isset($filterAll['bestseller']) ? 1 : 0;
         $dataUpdateProduct = [
             'name' => $filterAll['name'],
             'category_id' => $filterAll['category_id'],
             'price' => $filterAll['price'],
             'description' => $filterAll['description'],
+            'new' => $new,
+            'flag' => $flag,
+            'bestseller' => $bestseller,
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-
-        if (!empty($filterAll['thumbnail'])) {
-            $dataUpdateProduct['thumbnail'] = $filterAll['thumbnail'];
-        }
-        $dataUpdateImages = [
-            'product_id' => $productId,
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
-
-        if (!empty($filterAll['images_path'])) {
-            $dataUpdateImages['images_path'] = implode(",", $filterAll['images_path']);
+        if (!empty($dest)) {
+            $dataUpdateProduct['thumbnail'] = basename($dest);
         }
 
         $condition = "id = $productId";
-        $conditionImg = "product_id = $productId";
-
         $updateStatus = update('product', $dataUpdateProduct, $condition);
-        $updateImagesStatus = update('galery', $dataUpdateImages, $conditionImg);
-        if (empty($error)) {
-            if ($updateStatus && $updateImagesStatus) {
-                setFlashData('msg', 'Cập nhật thông tin sản phẩm thành công.');
-                setFlashData('msg_type', 'success');
-                redirect('?module=products&action=list');
-            } else {
-                setFlashData('msg', 'Cập nhật thông tin sản phẩm thất bại, vui lòng thử lại.');
-                setFlashData('msg_type', 'danger');
-            }
-            redirect('?module=products&action=edit');
-        } else {
-            setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
-            setFlashData('msg_type', 'danger');
-            setFlashData('error', $error);
-            setFlashData('old', $filterAll);
-            redirect('?module=products&action=edit&id=' . $productId);
-        }
-        redirect('?module=products&action=edit&id=' . $productId);
-    }
 
+        if ($updateStatus) {
+            $deleteCondition = "product_id = $productId";
+            delete('galery', $deleteCondition);
+
+            foreach ($upload_dest as $image_path) {
+                if (!in_array(basename($image_path), $this->getImagesByProductId($productId))) {
+                    $dataUpdateImage = [
+                        'product_id' => $productId,
+                        'images_path' => basename($image_path),
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ];
+                    insert('galery', $dataUpdateImage);
+                }
+            }
+            setFlashData('msg', 'Cập nhật thông tin sản phẩm thành công.');
+            setFlashData('msg_type', 'success');
+            redirect('?module=products&action=list');
+        } else {
+            setFlashData('msg', 'Cập nhật thông tin sản phẩm thất bại, vui lòng thử lại.');
+            setFlashData('msg_type', 'danger');
+            redirect('?module=products&action=edit');
+        }
+    }
     public function listProduct()
     {
         $products = array();
-
         $query = "SELECT * FROM product";
         $result = $this->conn->query($query);
         if ($result && $result->rowCount() > 0) {
@@ -193,10 +200,8 @@ class Product
         $filterAll = filter();
         if (!empty($filterAll['id'])) {
             $productId = $filterAll['id'];
-            // Lấy chi tiết sản phẩm
             $productDetail = getRaw("SELECT * FROM product WHERE id = $productId");
             if ($productDetail > 0) {
-                // Xóa các bản ghi trong bảng 'galery' liên kết với sản phẩm
                 $deleteGalery = delete('galery', "product_id = $productId");
                 if ($deleteGalery) {
                     // Xóa sản phẩm

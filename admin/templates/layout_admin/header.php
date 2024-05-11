@@ -18,6 +18,7 @@ if (!defined("_CODE")) {
     </title>
 
 
+
 </head>
 
 <body id="page-top">
@@ -82,15 +83,37 @@ if (!defined("_CODE")) {
                         aria-haspopup="true" aria-expanded="false">
                         <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                         </span>
-                        <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                        <?php
+
+                        $profile = oneRaw("SELECT avatar FROM user");
+                        ?>
+                        <?php
+                        if (!empty($profile)) {
+                            ?>
+                            <img class="img-profile rounded-circle" src="../images/avatar/<?php echo $profile['avatar'] ?>">
+
+                            <?php
+                        }
+                        ?>
+
                     </a>
                     <!-- Dropdown - User Information -->
                     <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                         aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Profile
-                        </a>
+                        <?php
+                        if (isAdminLogin()) {
+                            ?>
+                            <a class="dropdown-item" href="?module=account&action=profile" class="account-switch"><i
+                                    class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>Profile</a>
+                            <?php
+                        } else {
+                            ?>
+                            <a href="?module=authen&action=login" class="account-switch"><img src="../img/icon/user.png"
+                                    alt="" style="width: 20px"></a>
+                            <?php
+                        }
+                        ?>
+
                         <a class="dropdown-item" href="#">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             Settings

@@ -8,26 +8,74 @@ $data = [
     'pageTitle' => 'Sửa sản phẩm'
 ];
 
-$product = new Product($conn); // Khởi tạo đối tượng Product và truyền kết nối cơ sở dữ liệu vào
+$product = new Product($conn);
 
 $filterAll = filter();
 if (!empty($filterAll['id'])) {
     $productId = $filterAll['id'];
     $productDetail = oneRaw("SELECT * FROM product WHERE id='$productId'");
     if (!empty($productDetail)) {
-        //Tồn tại
         setFlashData('product-detail', $productDetail);
     } else {
         redirect('?module=products&action=list');
     }
 }
+
 $data = [
     'pageTitle' => 'Sửa sản phẩm'
 ];
-if (isPost()) {
 
-    $updateStatus = $product->updateProduct($dataUpdate);
+if (isPost()) {
+    $filterAll = filter();
+    $error = [];
+
+    if (empty($filterAll['name'])) {
+        $error['name']['required'] = 'Tên sản phẩm không được để trống.';
+    } else {
+        if (strlen($filterAll['name']) < 5) {
+            $error['name']['min'] = 'Tên sản phẩm phải có ít nhất 10 ký tự.';
+        }
+    }
+
+    if (empty($filterAll['price'])) {
+        $error['price']['required'] = 'Giá không được để trống.';
+    } else {
+        if (!isNumberInt($filterAll['price'])) {
+            $error['price']['isNumberInt'] = 'Giá phải có giá trị là số nguyên.';
+        }
+    }
+
+    if (empty($filterAll['description'])) {
+        $error['description']['required'] = 'Mô tả không được để trống.';
+    } else {
+        if (strlen($filterAll['description']) < 20) {
+            $error['description']['min'] = 'Mô tả phải có ít nhất 20 ký tự.';
+        }
+    }
+
+    if (empty($error)) {
+        try {
+            $gallery_dest = $product->uploadGallery($_FILES['images_path']);
+            $dest = $product->uploadThumbnail();
+            if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $dest)) {
+                $product->updateProduct($filterAll, $dest, $gallery_dest);
+            } else {
+                throw new Exception('Unable to move file');
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    } else {
+        setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
+        setFlashData('msg_type', 'danger');
+        setFlashData('error', $error);
+        setFlashData('old', $filterAll);
+        redirect('?module=products&action=edit&id=' . $productId);
+    }
+    redirect('?module=products&action=edit&id=' . $productId);
 }
+
+
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 $error = getFlashData('error');
@@ -36,7 +84,9 @@ $productDetails = getFlashData('product-detail');
 if ($productDetails) {
     $old = $productDetails;
 }
-
+echo '<pre>';
+var_dump($old);
+echo '</pre>';
 ?>
 <div id="wrapper">
     <?php
@@ -61,7 +111,7 @@ if ($productDetails) {
                                 getMSG($msg, $msg_type);
                             }
                             ?>
-                            <form class="products" method="post">
+                            <form class="products" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
@@ -103,6 +153,21 @@ if ($productDetails) {
                                             echo form_error('price', '<span class= "error">', '</span>', $error);
                                             ?>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="flag">Hiển thị sản phẩm ở trang chủ: </label>
+                                            <input type="checkbox" <?php echo isset($old['flag']) && $old['flag'] ? 'checked' : ''; ?> name="flag">
+                                            <?php echo form_error('flag', '<span class= "error">', '</span>', $error); ?>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new">Sản phẩm mới:</label>
+                                            <input type="checkbox" <?php echo isset($old['new']) && $old['new'] ? 'checked' : ''; ?> name="new">
+                                            <?php echo form_error('new', '<span class= "error">', '</span>', $error); ?>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bestseller">Sản phẩm bán chạy nhất:</label>
+                                            <input type="checkbox" <?php echo isset($old['bestseller']) && $old['bestseller'] ? 'checked' : ''; ?> name="bestseller">
+                                            <?php echo form_error('bestseller', '<span class= "error">', '</span>', $error); ?>
+                                        </div>
 
                                         <div class="form-group">
                                             <p>Ảnh bìa:</p>
@@ -110,11 +175,8 @@ if ($productDetails) {
                                                 onchange="readThumbnailURL(this);">
 
                                             <img id="ShowImage"
-                                                src="../images/products/<?php echo $old['thumbnail']; ?>" width="150"
-                                                height="200" />
-
-
-
+                                                src="../images/products/thumbnail/<?php echo $old['thumbnail']; ?>"
+                                                width="150" height="200" />
                                         </div>
                                         <div class="form-group">
                                             <?php
@@ -134,11 +196,12 @@ if ($productDetails) {
                                                 if ($stmt->rowCount() > 0) {
                                                     foreach ($images as $image) {
                                                         $old['images_path'] = explode(",", $image['images_path']);
-                                                        if(!empty($old['images_path'])){
+                                                        if (!empty($old['images_path'])) {
                                                             foreach ($old['images_path'] as $image_path) {
                                                                 ?>
-                                                                <img id="ShowImage" src="../images/products/<?php echo $image_path ?>"
-                                                                    width="150" height="200"/>
+                                                                <img id="ShowImage"
+                                                                    src="../images/products/gallery/<?php echo $image_path ?>"
+                                                                    width="150" height="200" />
                                                                 <?php
                                                             }
                                                         }
@@ -149,18 +212,8 @@ if ($productDetails) {
                                                     echo "Không có ảnh nào trong thư viện.";
                                                 }
 
-                                                echo '<pre>';
-                                                var_dump($old);
-                                                echo '</pre>';
                                                 ?>
-
-
-
                                             </div>
-
-
-
-
                                         </div>
                                         <style>
                                             .img-preview {

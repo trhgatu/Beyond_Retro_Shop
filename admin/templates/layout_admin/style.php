@@ -26,3 +26,13 @@
 <!-- Page level custom scripts -->
 <script src="<?php echo _WEB_HOST_TEMPLATE; ?>/js/chart-area-demo.js"></script>
 <script src="<?php echo _WEB_HOST_TEMPLATE; ?>/js/chart-pie-demo.js"></script>
+
+
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/font-awesome.min.css" type="text/css">
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/elegant-icons.css" type="text/css">
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/magnific-popup.css" type="text/css">
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/nice-select.css" type="text/css">
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/owl.carousel.min.css" type="text/css">
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/slicknav.min.css" type="text/css">
+<link rel="stylesheet" href="<?php echo _WEB_HOST_TEMPLATE; ?>/css/style.css" type="text/css">

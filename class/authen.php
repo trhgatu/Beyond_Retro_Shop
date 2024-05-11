@@ -38,38 +38,48 @@ class Authen
         }
     }
 
-    public static function login_user()
+    public function login_user()
     {
         $filterAll = filter();
         if (!empty(trim($filterAll['email'])) && !empty(trim($filterAll['password']))) {
             $email = $filterAll['email'];
             $password = $filterAll['password'];
 
-            $userQuery = oneRaw("SELECT id, password, role_id FROM user WHERE email = '$email'");
+            $userQuery = oneRaw("SELECT id, password, activeToken, status FROM user WHERE email = '$email'");
 
             if (!empty($userQuery)) {
                 $passwordHash = $userQuery['password'];
                 $userId = $userQuery['id'];
+                $activeToken = $userQuery['activeToken'];
+                $status = $userQuery['status'];
 
-                if (password_verify($password, $passwordHash)) {
-                    $tokenLogin = sha1(uniqid() . time());
-                    $dataInsert = [
-                        'user_id' => $userId,
-                        'token' => $tokenLogin,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ];
-                    $insertStatus = insert('tokenlogin', $dataInsert);
+                if (!empty($activeToken && $status == 0 || empty($activeToken) && $status == 0)) {
+                    setFlashData('msg', 'Tài khoản của bạn chưa được kích hoạt, vui lòng kiểm tra Email để kích hoạt tài khoản.');
+                    setFlashData('msg_type', 'danger');
+                    redirect('../user/?module=authen&action=login');
+                    exit();
+                } else {
+                    if (password_verify($password, $passwordHash)) {
+                        $tokenLogin = sha1(uniqid() . time());
+                        $dataInsert = [
+                            'user_id' => $userId,
+                            'token' => $tokenLogin,
+                            'created_at' => date('Y-m-d H:i:s'),
+                        ];
+                        $insertStatus = insert('tokenlogin', $dataInsert);
 
-                    if ($insertStatus) {
-                        setSession('user_id', $userId);
-                        setSession('tokenlogin', $tokenLogin);
+                        if ($insertStatus) {
+                            setSession('user_id', $userId);
+                            setSession('tokenlogin', $tokenLogin);
+                            redirect('http://localhost/Beyond_Retro/include/');
+                        } else {
+                            setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
+                            setFlashData('msg_type', 'danger');
+                        }
                     } else {
-                        setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
+                        setFlashData('msg', 'Mật khẩu không chính xác.');
                         setFlashData('msg_type', 'danger');
                     }
-                } else {
-                    setFlashData('msg', 'Mật khẩu không chính xác.');
-                    setFlashData('msg_type', 'danger');
                 }
             } else {
                 setFlashData('msg', 'Email không tồn tại.');
@@ -81,6 +91,8 @@ class Authen
         }
         redirect('http://localhost/Beyond_Retro/include/');
     }
+
+
     public static function login_admin()
     {
         $filterAll = filter();
@@ -99,49 +111,73 @@ class Authen
                 $userRole = $roleQuery['name'];
 
                 if (password_verify($password, $passwordHash)) {
-                    $tokenLogin = sha1(uniqid() . time());
-                    $dataInsert = [
-                        'user_id' => $userId,
-                        'token' => $tokenLogin,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ];
                     if ($userRole == 'Admin') {
+                        $tokenLogin = sha1(uniqid() . time());
+                        $dataInsert = [
+                            'user_id' => $userId,
+                            'token' => $tokenLogin,
+                            'created_at' => date('Y-m-d H:i:s'),
+                        ];
                         $insertStatus = insert('tokenlogin_admin', $dataInsert);
                         if ($insertStatus) {
-                            setSession('user_id', $userId);
                             setSession('tokenlogin_admin', $tokenLogin);
                             redirect('?module=home&action=dashboard');
                         } else {
                             setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
                             setFlashData('msg_type', 'danger');
+                            redirect('?module=authen&action=login');
                         }
-
-                    } else if ($userRole == 'User') {
+                    } else {
                         setFlashData('msg', 'Bạn không có quyền truy cập.');
                         setFlashData('msg_type', 'danger');
+                        redirect('?module=authen&action=login');
                     }
-
                 } else {
                     setFlashData('msg', 'Mật khẩu không chính xác.');
                     setFlashData('msg_type', 'danger');
+                    redirect('?module=authen&action=login');
                 }
             } else {
                 setFlashData('msg', 'Email không tồn tại.');
                 setFlashData('msg_type', 'danger');
+                redirect('?module=authen&action=login');
             }
         } else {
             setFlashData('msg', 'Vui lòng nhập email và mật khẩu.');
             setFlashData('msg_type', 'danger');
+            redirect('?module=authen&action=login');
         }
-        redirect('?module=authen&action=login');
     }
-    public static function logout_user()
+
+    public static function logout_user($conn, $user_id)
     {
-        $token = getSession('tokenlogin');
-        delete('tokenlogin', "token='$token'");
-        removeSession('tokenlogin');
-        redirect('http://localhost/Beyond_Retro/include/');
+        // Kiểm tra xem session có tồn tại không trước khi sử dụng
+        if (getSession('tokenlogin') && getSession('user_id')) {
+            $token = getSession('tokenlogin');
+            $userId = getSession('user_id');
+
+            // Xóa phiên đăng nhập
+            delete('tokenlogin', "token = '$token'");
+
+            // Cập nhật trạng thái last_active của người dùng
+            $updateUserQuery = "UPDATE user SET last_active = NOW() WHERE id = :user_id";
+            $stmtUser = $conn->prepare($updateUserQuery);
+            $stmtUser->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmtUser->execute();
+
+            // Xóa session
+            removeSession('tokenlogin');
+            removeSession('user_id');
+
+            // Chuyển hướng người dùng
+            redirect('http://localhost/Beyond_Retro/include/');
+        }
+
     }
+
+
+
+
     public static function logout_admin()
     {
         $token = getSession('tokenlogin_admin');
@@ -169,9 +205,7 @@ class Authen
 
 
         if ($insertStatus) {
-            //Tạo link kích hoạt tài khoản
             $linkActive = _WEB_HOST . '?module=authen&action=active&token=' . $activeToken;
-            //Thiết lập gửi mail
             $subject = $filterAll['fullname'] . 'Vui lòng kích hoạt tài khoản';
             $content = 'Chào' . $filterAll['fullname'] . '.</>';
             $content .= 'Click vào link này để kích hoạt tài khoản : </br>';

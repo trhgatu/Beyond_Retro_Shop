@@ -73,7 +73,6 @@ if (!isUserLogin()) {
                                                     <?php
                                                     $categories = new Category($conn);
                                                     $listCategories = $categories->listCategories();
-
                                                     if (!empty($listCategories)):
                                                         foreach ($listCategories as $item):
                                                             ?>
@@ -180,7 +179,7 @@ if (!isUserLogin()) {
                                     <div class="product__item">
                                         <div class="product__item__pic set-bg">
                                             <img class="product__item__pic set-bg"
-                                                src="../images/products/<?php echo $item['thumbnail'] ?>">
+                                                src="../images/products/thumbnail/<?php echo $item['thumbnail'] ?>">
                                         </div>
                                         <div class="product__item__title">
                                             <a

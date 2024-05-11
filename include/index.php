@@ -39,11 +39,12 @@ $data = [
     require_once ("../db_function/functions.php");
     require_once ("../db_function/database.php");
     require_once ("../db_function/session.php");
+    var_dump(getSession());
     layout('header', $data);
-    layout('search',$data);
-    layout('main', $data);
+    layout('search', $data);
+    include 'main.php';
     layout('menu', $data);
-    layout('footer',$data);
+    layout('footer', $data);
     ?>
     <!-- Js Plugins -->
     <script src="<?php echo _WEB_HOST_TEMPLATE; ?>/js/jquery-3.3.1.min.js"></script>

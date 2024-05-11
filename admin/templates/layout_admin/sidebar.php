@@ -61,7 +61,7 @@ if (!defined("_CODE")) {
         </a>
     </li><!-- Nav Item - Orders -->
     <li class="nav-item">
-        <a class="nav-link" href="?module=products&action=list">
+        <a class="nav-link" href="?module=orders&action=list">
         <i class="fa-solid fa-newspaper"></i>
             <span>Quản lý đơn hàng</span>
         </a>

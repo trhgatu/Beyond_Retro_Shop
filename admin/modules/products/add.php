@@ -1,6 +1,6 @@
 <?php
 if (!defined("_CODE")) {
-    die ("Access Denied !");
+    die("Access Denied !");
 }
 require_once '../class/product.php';
 
@@ -11,7 +11,56 @@ $userRole = getSession('admin_role');
 $product = new Product($conn);
 
 if (isPost()) {
-    $product->addProduct($dataInsert);
+    $filterAll = filter();
+    $error = [];
+    //Validate name: bắt buộc phải nhập
+    if (empty($filterAll['name'])) {
+        $error['name']['required'] = 'Tên sản phẩm không được để trống.';
+    } else {
+        $name = $filterAll['name'];
+        $sql = "SELECT * FROM product WHERE name = '$name'";
+        if (getRows($sql) > 0) {
+            $error['name']['unique'] = 'Sản phẩm đã tồn tại.';
+        }
+    }
+    //Validate giá: bắt buộc phải nhập, đúng định dạng số nguyên
+    if (empty($filterAll['price'])) {
+        $error['price']['required'] = 'Giá không được để trống.';
+    } else {
+        if (!isNumberInt($filterAll['price'])) {
+            $error['price']['isNumberInt'] = 'Giá phải là số nguyên.';
+        }
+
+    }
+    //Validate mô tả: bắt buộc phải nhập, < 20 ký tự
+    if (empty($filterAll['description'])) {
+        $error['description']['required'] = 'Mô tả không được để trống.';
+    } else {
+        if (strlen($filterAll['description']) < 20) {
+            $error['description']['min'] = 'Mô tả phải có ít nhất 50 ký tự.';
+        }
+    }
+
+    if (empty($error)) {
+        try {
+            $gallery_dest = $product->uploadGallery($_FILES['images_path']);
+            $dest = $product->uploadThumbnail();
+            if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $dest)) {
+                $product->addProduct($filterAll, $dest, $gallery_dest);
+            } else {
+                throw new Exception('Unable to move file');
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    } else {
+        setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
+        setFlashData('msg_type', 'danger');
+        setFlashData('error', $error);
+        setFlashData('old', $filterAll);
+        redirect('?module=products&action=add');
+    }
+
 }
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
@@ -38,11 +87,11 @@ $old = getFlashData('old');
                                 <h1 class="h4 text-gray-900 mb-4">Thêm sản phẩm mới</h1>
                             </div>
                             <?php
-                            if (!empty ($msg)) {
+                            if (!empty($msg)) {
                                 getMSG($msg, $msg_type);
                             }
                             ?>
-                            <form class="products" method="post">
+                            <form class="products" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
@@ -79,7 +128,19 @@ $old = getFlashData('old');
                                             echo form_error('price', '<span class= "error">', '</span>', $error);
                                             ?>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="flag">Hiển thị sản phẩm ở trang chủ: </label>
+                                            <input type="checkbox" value="1" name="flag">
+                                        </div>
 
+                                        <div class="form-group">
+                                            <label for="new">Sản phẩm mới:</label>
+                                            <input type="checkbox" value="1" name="new">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new">Sản phẩm bán chạy nhất:</label>
+                                            <input type="checkbox" value="1" name="bestseller">
+                                        </div>
                                         <div class="form-group">
                                             <p>Ảnh bìa:</p>
                                             <input type="file" class="form-control form-control-user" name="thumbnail"
@@ -144,13 +205,9 @@ $old = getFlashData('old');
                                                     ?>">
                                             <?php
                                             echo form_error('description', '<span class= "error">', '</span>', $error);
-
                                             ?>
                                         </div>
-
-
                                     </div>
-
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">

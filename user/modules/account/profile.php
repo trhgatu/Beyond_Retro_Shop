@@ -27,66 +27,11 @@ layout('header', $data);
 <div class="container" style="padding-top: 130px">
     <div class="main-body">
         <div class="row">
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <?php
-                        if (!empty($profileUser)):
-                            ?>
-                            <h4 class="align-items-center text-center" style="padding-top: 10px; padding-bottom: 20px;">Tài khoản của tôi</h4>
-                            <div class="d-flex flex-column align-items-center text-center">
-                                <img src="../images/avatar/<?php echo $profileUser['avatar'] ?>" alt="Admin"
-                                    class="rounded-circle p-1 bg-primary" width="110">
-
-                                <div class="mt-3">
-                                    <h4>
-                                        <?php echo $profileUser['fullname'] ?>
-                                    </h4>
-                                    <p class="text-muted font-size-sm">
-                                        <?php echo $profileUser['address'] ?>
-                                    </p>
-
-                                </div>
-                            </div>
-                            <hr class="my-4">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item align-items-center flex-wrap">
-
-                                    <h6 class="mb-0">
-                                        <a href="?module=account&action=confirmpassword">
-                                            <img src="../img/password.png" style="width: 25px; height: 25px">
-                                            Đổi mật khẩu
-                                        </a>
-                                    </h6>
-
-
-                                </li>
-                                <li class="list-group-item  align-items-center flex-wrap">
-
-                                    <h6 class="mb-0">
-                                        <a href="#">
-                                            <img src="https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078"
-                                                style="width: 25px; height: 25px">
-                                            Đơn mua
-                                        </a>
-                                    </h6>
-
-
-                                </li>
-                                <li class="list-group-item  align-items-center flex-wrap">
-
-                                    <h6 class="mb-0">
-                                        <a href="?module=authen&action=logout" class="btn btn-primary btn-danger">
-
-                                            Đăng xuất
-                                        </a>
-                                    </h6>
-
-
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+            <div class="col-lg-4" style="padding: 0">
+                <?php
+                if (!empty($profileUser)):
+                    include "card.php";
+                    ?>
                 </div>
                 <div class="col-lg-8">
                     <div class="card">
@@ -106,8 +51,6 @@ layout('header', $data);
                                             <img src="../images/avatar/<?php echo $profileUser['avatar'] ?>" alt="Admin"
                                                 class="rounded-circle p-1 bg-primary" width="110" id="ShowImage"
                                                 style="max-width: 110px; max-height:110px;">
-
-
                                         </div>
                                         <div class="avatar-input">
                                             <input type="file" id="avatar" name="avatar" onchange="readURL(this);">
@@ -196,14 +139,27 @@ layout('header', $data);
                                     </div>
                                 </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">Địa chỉ</h6>
+                                <?php
+                                $userId = getSession('user_id');
+                                $listAddress = oneRaw("SELECT * FROM addresses WHERE user_id = $userId");
+
+                                ?>
+                                <?php
+                                if (!empty($listAddress)) {
+                                    ?>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Địa chỉ</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                            <p><b><?php echo $listAddress['address'] . ', ' . $listAddress['district'] . ', </br>' . $listAddress['city'] . ', ' . $listAddress['country'] ?></b>
+                                            </p><a href="?module=address&action=list">Cập nhật</a>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                        <p><b><?php echo $profileUser['address'] ?></b></p><a href="?module=address&action=list">Cập nhật</a>
-                                    </div>
-                                </div>
+                                    <?php
+                                }
+                                ?>
+
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-9 text-secondary">
@@ -215,15 +171,14 @@ layout('header', $data);
                     </div>
 
                 </div>
-
             </div>
         </div>
     </div>
 
     <?php
 
-                        endif;
-                        ?>
+                endif;
+                ?>
 
 <?php
 layout('footer', $data);

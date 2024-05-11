@@ -83,7 +83,6 @@ if (isPost()) {
             setFlashData('msg', 'Sửa người dùng thất bại, vui lòng thử lại.');
             setFlashData('msg_type', 'danger');
         }
-
     } else {
         setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
         setFlashData('msg_type', 'danger');
@@ -145,9 +144,6 @@ if ($userDetails) {
                                             .avatar {
                                                 margin-bottom: 20px;
                                             }
-
-
-
                                             #ShowImage {
                                                 box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
                                                 width: 50%;

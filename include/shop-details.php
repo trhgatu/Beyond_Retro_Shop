@@ -74,23 +74,24 @@ $productImages = $product->getImagesByProductId($productId);
                                             <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
 
                                                 <img class="product__thumb__pic set-bg"
-                                                    src="../images/products/<?php echo $item['thumbnail']; ?>">
+                                                    src="../images/products/thumbnail/<?php echo $item['thumbnail']; ?>">
                                             </a>
                                         </li>
                                         <?php
+
                                     }
-                                    foreach ($productImages as $images) {
-                                        $image_paths = explode(",", $images['images_path']);
-                                        foreach ($image_paths as $key => $image_path) {
-                                            ?>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#tabs-<?php echo $key + 2; ?>" role="tab">
-                                                    <img class="product__thumb__pic set-bg"
-                                                        src="../images/products/<?php echo $image_path; ?>">
-                                                </a>
-                                            </li>
-                                            <?php
-                                        }
+                                    $tab_index = 1;
+                                    foreach ($productImages as $key => $image) {
+                                        ?>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#tabs-<?php echo $tab_index + 1; ?>"
+                                                role="tab">
+                                                <img class="product__thumb__pic set-bg"
+                                                    src="../images/products/gallery/<?php echo $image['images_path']; ?>">
+                                            </a>
+                                        </li>
+                                        <?php
+                                        $tab_index++;
                                     }
                                     ?>
                                 </ul>
@@ -99,23 +100,22 @@ $productImages = $product->getImagesByProductId($productId);
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                         <div class="product__details__pic__item">
-                                            <img src="../images/products/<?php echo $item['thumbnail']; ?>">
+                                            <img src="../images/products/thumbnail/<?php echo $item['thumbnail']; ?>">
                                         </div>
                                     </div>
                                     <?php
+                                    $tab_panel_index = 1;
 
                                     if (!empty($productImages)) {
-                                        foreach ($productImages as $images) {
-                                            $image_paths = explode(",", $images['images_path']);
-                                            foreach ($image_paths as $key => $image_path) {
-                                                ?>
-                                                <div class="tab-pane" id="tabs-<?php echo $key + 2; ?>" role="tabpanel">
-                                                    <div class="product__details__pic__item">
-                                                        <img src="../images/products/<?php echo $image_path; ?>">
-                                                    </div>
+                                        foreach ($productImages as $key => $image) {
+                                            ?>
+                                            <div class="tab-pane" id="tabs-<?php echo $tab_panel_index + 1; ?>" role="tabpanel">
+                                                <div class="product__details__pic__item">
+                                                    <img src="../images/products/gallery/<?php echo $image['images_path'] ?>">
                                                 </div>
-                                                <?php
-                                            }
+                                            </div>
+                                            <?php
+                                            $tab_panel_index++;
                                         }
                                     }
                                     ?>
@@ -169,7 +169,6 @@ $productImages = $product->getImagesByProductId($productId);
                                                 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                                 foreach ($categories as $category) {
-
                                                     $categoryId = htmlspecialchars($category['id']);
                                                     $categoryName = htmlspecialchars($category['name']);
                                                     ?>

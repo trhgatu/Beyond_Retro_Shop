@@ -138,7 +138,6 @@ class Account
                         $error['fullname']['min'] = 'Họ tên phải có ít nhất 5 ký tự.';
                     }
                 }
-
                 // Kiểm tra xem avatar có được chọn không
                 if (!empty($filterAll['avatar'])) {
                     // Nếu có avatar được chọn, thực hiện việc cập nhật dữ liệu vào CSDL

@@ -89,7 +89,7 @@ $old = getFlashData('old');
                                                     <?php echo number_format($item['price'], 0, ',', '.') ?> VND
                                                 </td>
                                                 <td>
-                                                    <img src="../images/products/<?php echo $item['thumbnail'] ?>"
+                                                    <img src="../images/products/thumbnail/<?php echo $item['thumbnail'] ?>"
                                                         style="max-width: 170px;">
                                                 </td>
                                                 <td>
@@ -102,7 +102,7 @@ $old = getFlashData('old');
                                                             $image_paths = explode(",", $image['images_path']);
                                                             foreach ($image_paths as $image_path) {
                                                                 // Hiển thị mỗi ảnh trong thẻ <img>
-                                                                echo "<img src='../images/products/$image_path' style='width: 40%;'> ";
+                                                                echo "<img src='../images/products/gallery/$image_path' style='width: 40%;'> ";
                                                             }
                                                         }
                                                     } else {

@@ -1,20 +1,20 @@
 <?php
 if (!defined("_CODE")) {
-    die ("Access Denied !");
+    die("Access Denied !");
 }
 $data = [
     'pageTitle' => 'Danh sách người dùng'
 ];
-//Kiểm tra trạng thái đăng nhập
+require_once '../class/user.php';
+$user = new User($conn);
+
 if (!isAdminLogin()) {
     redirect('?module=authen&action=login');
 }
 require_once '../class/user.php';
-//Truy vấn vào bảng user
+
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
-//$error = getFlashData('error');
-//$old = getFlashData('old');
 ?>
 <div id="wrapper">
     <?php
@@ -36,7 +36,7 @@ $msg_type = getFlashData('msg_type');
                         </h6>
                     </div>
                     <?php
-                    if (!empty ($msg)) {
+                    if (!empty($msg)) {
                         getMSG($msg, $msg_type);
                     }
                     ?>
@@ -46,11 +46,13 @@ $msg_type = getFlashData('msg_type');
                                 <thead>
                                     <th>STT</th>
                                     <th width="80px">Loại</th>
-                                    <th>Ảnh đại diện</th>
+                                    <th>Avatar</th>
                                     <th>Họ tên</th>
                                     <th>Email</th>
                                     <th>Số điện thoại</th>
                                     <th>Trạng thái</th>
+                                    <th>Trạng thái tài khoản</th>
+                                    <th>Lần đăng nhập cuối</th>
                                     <th width="5%">Sửa</th>
                                     <th width="5%">Xóa</th>
 
@@ -58,10 +60,9 @@ $msg_type = getFlashData('msg_type');
                                 <tbody>
                                     <?php
                                     $user = new User($conn);
-                                    $listUsers = $user->listUser();
-
-                                    if (!empty ($listUsers)):
-                                        $count = 0; //STT
+                                    $listUsers = $user->list();
+                                    if (!empty($listUsers)):
+                                        $count = 0;
                                         foreach ($listUsers as $item):
                                             $count++;
                                             ?>
@@ -70,36 +71,58 @@ $msg_type = getFlashData('msg_type');
                                                     <?php echo $count; ?>
                                                 </td>
                                                 <td>
-                                                <?php
-                                                    $role_id = $item['role_id'];
-                                                    $role_name = "";
+                                                    <p>
+                                                        <?php
+                                                        $role_id = $item['role_id'];
+                                                        $role_name = "";
+                                                        $stmt = $conn->prepare("SELECT name FROM role WHERE id = :role_id");
+                                                        $stmt->bindParam(':role_id', $role_id);
+                                                        $stmt->execute();
+                                                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                                                        if ($result) {
+                                                            $role_name = $result['name'];
+                                                        }
+                                                        echo $role_name;
+                                                        ?>
+                                                    </p>
 
-                                                    $stmt = $conn->prepare("SELECT name FROM role WHERE id = :role_id");
-                                                    $stmt->bindParam(':role_id', $role_id);
-                                                    $stmt->execute();
-                                                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                                                    if ($result) {
-                                                        $role_name = $result['name'];
-                                                    }
-                                                    echo $role_name;
-                                                    ?>
                                                 </td>
                                                 <td>
                                                     <img src="../images/avatar/<?php echo $item['avatar'] ?>"
-                                                        style="max-width: 170px;">
+                                                        style="max-width: 50px;">
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['fullname'] ?>
+                                                    <p><?php echo $item['fullname'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['email'] ?>
+                                                    <p><?php echo $item['email'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['phone_number'] ?>
+                                                    <p><?php echo $item['phone_number'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['status'] == 1 ? '<button class="btn btn-success btn-sm">Đã kích hoạt</button>' : '<button class="btn btn-danger btn-sm">Chưa kích hoạt</button>'; ?>
+                                                    <p><?php
+                                                    if ($item['online']) {
+                                                        echo '<button class="btn btn-success btn-sm">Online</button>';
+                                                    } else {
+                                                        echo '<button class="btn btn-danger btn-sm">Offline</button>';
+                                                    }
+                                                    ?></p>
+
                                                 </td>
+                                                <td>
+                                                    <?php
+                                                    if ($item['status'] == 1) {
+                                                        echo '<button class="btn btn-success btn-sm">Đã kích hoạt</button>';
+                                                    } else {
+                                                        echo '<button class="btn btn-danger btn-sm">Chưa kích hoạt</button>';
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <p><?php echo date("d-m-Y H:i:s", strtotime($item['last_active'])); ?></p>
+                                                </td>
+
                                                 <td><a href="<?php echo _WEB_HOST_ADMIN; ?>?module=users&action=edit&id=<?php echo $item['id'] ?>"
                                                         class="btn btn-warning btn-sm"><i
                                                             class="fa-solid fa-pen-to-square"></i></a>
@@ -133,8 +156,13 @@ $msg_type = getFlashData('msg_type');
             </div>
         </div>
         <?php
-       layout_admin('footer', $data);
+        layout_admin('footer', $data);
         ?>
     </div>
 
 </div>
+<style>
+    p {
+        font-size: 13px;
+    }
+</style>
