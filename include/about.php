@@ -38,7 +38,7 @@ if (!isUserLogin()) {
                     <div class="breadcrumb__text">
                         <h4>Giới thiệu</h4>
                         <div class="breadcrumb__links">
-                            <a href="http://localhost/Beyond_Retro/include/index.php">Home</a>
+                            <a href="index.php">Home</a>
                             <span>Giới thiệu</span>
                         </div>
                     </div>

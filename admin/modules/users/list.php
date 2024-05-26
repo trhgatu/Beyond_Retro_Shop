@@ -6,12 +6,11 @@ $data = [
     'pageTitle' => 'Danh sách người dùng'
 ];
 require_once '../class/user.php';
-$user = new User($conn);
+require_once '../class/admin.php';
 
 if (!isAdminLogin()) {
     redirect('?module=authen&action=login');
 }
-require_once '../class/user.php';
 
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
@@ -49,9 +48,9 @@ $msg_type = getFlashData('msg_type');
                                     <th>Avatar</th>
                                     <th>Họ tên</th>
                                     <th>Email</th>
-                                    <th>Số điện thoại</th>
+                                    <th>SĐT</th>
+                                    <th>Hoạt động</th>
                                     <th>Trạng thái</th>
-                                    <th>Trạng thái tài khoản</th>
                                     <th>Lần đăng nhập cuối</th>
                                     <th width="5%">Sửa</th>
                                     <th width="5%">Xóa</th>
@@ -60,6 +59,7 @@ $msg_type = getFlashData('msg_type');
                                 <tbody>
                                     <?php
                                     $user = new User($conn);
+                                    $admin = new Admin($conn);
                                     $listUsers = $user->list();
                                     if (!empty($listUsers)):
                                         $count = 0;
@@ -113,7 +113,7 @@ $msg_type = getFlashData('msg_type');
                                                 <td>
                                                     <?php
                                                     if ($item['status'] == 1) {
-                                                        echo '<button class="btn btn-success btn-sm">Đã kích hoạt</button>';
+                                                        echo '<button class="btn btn-success btn-sm">Đã KH</button>';
                                                     } else {
                                                         echo '<button class="btn btn-danger btn-sm">Chưa kích hoạt</button>';
                                                     }
@@ -164,5 +164,8 @@ $msg_type = getFlashData('msg_type');
 <style>
     p {
         font-size: 13px;
+    }
+    th{
+        font-size: 14px;
     }
 </style>

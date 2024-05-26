@@ -39,10 +39,10 @@ $data = [
     require_once ("../db_function/functions.php");
     require_once ("../db_function/database.php");
     require_once ("../db_function/session.php");
-    var_dump(getSession());
     layout('header', $data);
     layout('search', $data);
     include 'main.php';
+    var_dump(getSession());
     layout('menu', $data);
     layout('footer', $data);
     ?>

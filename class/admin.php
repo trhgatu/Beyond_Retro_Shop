@@ -6,7 +6,7 @@ class Admin{
     {
         $this->conn = $conn;
     }
-    public function showProfile()
+    public function show()
     {
         if (isAdminLogin()) {
             $token = getSession('tokenlogin_admin');
@@ -29,6 +29,16 @@ class Admin{
             }
         }
         return null;
+    }
+    function isAdminOnline($user_id)
+    {
+        global $conn;
+        $query = "SELECT COUNT(*) FROM tokenlogin_admin WHERE user_id = :user_id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+        return $count > 0;
     }
 
 }

@@ -6,11 +6,11 @@ include '..class/account.php';
 $account = new Account($conn);
 
 if (!isUserLogin()) {
-    redirect('../user/?module=authen&action=login');
+    redirect('?module=authen&action=login');
 }
 
 if (isPost()) {
-    $account->updateInfo($filterAll, $dest);
+    $account->updateInfoAdmin($filterAll, $dest);
 }
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');

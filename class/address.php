@@ -21,7 +21,7 @@ class Address
             'city' => $filterAll['city'],
             'country' => $filterAll['country'],
             'user_id' => $user_id,
-            'is_default' => 1,
+            'is_default' => 0,
         ];
 
         $insertStatus = insert('addresses', $dataInsert);

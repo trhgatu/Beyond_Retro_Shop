@@ -94,5 +94,4 @@ $old = getFlashData('old');
         layout_admin('footer', $data);
         ?>
     </div>
-
 </div>

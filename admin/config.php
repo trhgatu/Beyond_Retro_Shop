@@ -7,6 +7,8 @@ const _CODE = true;
 define('_WEB_HOST_ADMIN', 'http://' . $_SERVER['HTTP_HOST'] . '/Beyond_Retro/admin/');
 define('_WEB_HOST_TEMPLATE', _WEB_HOST_ADMIN . '/templates');
 
+define('BASE_URL', 'http://localhost/Beyond_Retro/include/');
+
 
 //Thiết lập path
 define('_WEB_PATH', __DIR__);

@@ -55,17 +55,17 @@ function echoActiveClass($requestUri)
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="header__logo">
-                    <a href="http://localhost/Beyond_Retro/include/index.php"><img src="../img/beyond-retro-logo.png"
+                    <a href="<?php echo BASE_URL; ?>index.php"><img src="../img/beyond-retro-logo.png"
                             style="max-width : 80%" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6">
                 <nav class="header__menu mobile-menu">
                     <ul>
-                        <li><a href="http://localhost/Beyond_Retro/include/index.php" <?php echoActiveClass("index"); ?>>Home</a></li>
-                        <li><a href="http://localhost/Beyond_Retro/include/shop.php?page=1" <?php echoActiveClass("shop"); ?>>Shop</a></li>
-                        <li><a href="http://localhost/Beyond_Retro/include/about.php" <?php echoActiveClass("about"); ?>>Giới thiệu</a></li>
-                        <li><a href="http://localhost/Beyond_Retro/include/contact.php" <?php echoActiveClass("contact"); ?>>Liên hệ</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>index.php" <?php echoActiveClass("index"); ?>>Home</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>shop.php?page=1" <?php echoActiveClass("shop"); ?>>Shop</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>about.php" <?php echoActiveClass("about"); ?>>Giới thiệu</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>contact.php" <?php echoActiveClass("contact"); ?>>Liên hệ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -95,7 +95,7 @@ function echoActiveClass($requestUri)
                     <?php
                     $cartCount = isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0;
                     ?>
-                    <a href="http://localhost/Beyond_Retro/include/shopping-cart.php" class="cart-switch">
+                    <a href="shopping-cart.php" class="cart-switch">
                         <img src="../img/icon/shopping-bag.png" style="width: 23px" alt="">
                         <span id="cart-count"><?php echo $cartCount ?></span>
                     </a>

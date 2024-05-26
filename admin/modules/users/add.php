@@ -89,7 +89,7 @@ if (isPost()) {
                 $i++;
             }
             if (move_uploaded_file($_FILES['avatar']['tmp_name'], $dest)) {
-                $user->addUser($filterAll, $dest);
+                $user->add($filterAll, $dest);
             } else {
                 throw new Exception('Unable to move file');
             }

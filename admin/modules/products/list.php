@@ -65,16 +65,15 @@ $old = getFlashData('old');
                                             ?>
                                             <tr>
                                                 <td>
-                                                    <?php echo $count; ?>
+                                                   <p><?php echo $count; ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['name'] ?>
+                                                    <p><?php echo $item['name'] ?></p>
                                                 </td>
                                                 <td>
                                                     <?php
-                                                    $category_id = $item['category_id']; // ID danh mục của sản phẩm
+                                                    $category_id = $item['category_id'];
                                                     $category_name = "";
-                                                    // Truy vấn để lấy tên danh mục từ bảng danh mục dựa trên category_id của sản phẩm
                                                     $stmt = $conn->prepare("SELECT name FROM category WHERE id = :category_id");
                                                     $stmt->bindParam(':category_id', $category_id);
                                                     $stmt->execute();
@@ -86,7 +85,7 @@ $old = getFlashData('old');
                                                     ?>
                                                 </td>
                                                 <td>
-                                                    <?php echo number_format($item['price'], 0, ',', '.') ?> VND
+                                                    <p><?php echo number_format($item['price'], 0, ',', '.') ?> VNĐ</p>
                                                 </td>
                                                 <td>
                                                     <img src="../images/products/thumbnail/<?php echo $item['thumbnail'] ?>"
@@ -112,7 +111,7 @@ $old = getFlashData('old');
 
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['description'] ?>
+                                                    <p><?php echo $item['description'] ?></p>
                                                 </td>
                                                 <td><a href="<?php echo _WEB_HOST_ADMIN; ?>?module=products&action=edit&id=<?php echo $item['id'] ?>"
                                                         class="btn btn-warning btn-sm"><i
@@ -150,3 +149,11 @@ $old = getFlashData('old');
     </div>
 
 </div>
+<style>
+    p {
+        font-size: 13px;
+    }
+    th{
+        font-size: 14px;
+    }
+</style>

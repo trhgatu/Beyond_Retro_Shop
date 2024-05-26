@@ -14,12 +14,12 @@
                 </p>
             </div>
         </div>
-        <hr class="my-4">
+
         <ul class="list-group list-group-flush">
             <li class="list-group-item align-items-center flex-wrap">
                 <h6 class="mb-0">
                     <a href="?module=account&action=confirmpassword">
-                        <img src="../img/password.png" style="width: 25px; height: 25px">
+                        <img src="../img/padlock.png" style="width: 25px; height: 25px">
                         Đổi mật khẩu
                     </a>
                 </h6>
@@ -28,17 +28,12 @@
 
                 <h6 class="mb-0">
                     <a href="?module=orders&action=list">
-                        <img src="https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078"
-                            style="width: 25px; height: 25px">
+                        <img src="../img/order-delivery.png " style="width: 25px; height: 25px">
                         Đơn mua
                     </a>
                 </h6>
             </li>
             <li class="list-group-item  align-items-center flex-wrap">
-                <?php
-                $userId = getSession('user_id');
-                $listAddress = oneRaw("SELECT * FROM addresses WHERE user_id = $userId");
-                ?>
                 <h6 class="mb-0">
                     <a href="?module=address&action=list">
                         <img src="../img/location.png" style="width: 25px; height: 25px">
@@ -47,13 +42,20 @@
                 </h6>
             </li>
             <li class="list-group-item  align-items-center flex-wrap">
+                <div class="btn-logout">
                 <h6 class="mb-0">
-                    <a href="?module=authen&action=logout" class="btn btn-primary btn-danger">
-
+                    <a href="?module=authen&action=logout" class="btn btn-primary btn-danger" onclick="return confirm('Bạn có muốn đăng xuất?')">
                         Đăng xuất
                     </a>
                 </h6>
+                </div>
+
             </li>
         </ul>
     </div>
 </div>
+<style>
+    .btn-logout{
+        margin-top: 10px;
+    }
+</style>

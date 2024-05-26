@@ -24,7 +24,7 @@ $old = getFlashData('old');
 <?php
 layout('header', $data);
 ?>
-<div class="container" style="padding-top: 130px">
+<div class="container" style="padding-top: 110px">
     <div class="main-body">
         <div class="row">
             <div class="col-lg-4" style="padding: 0">
@@ -35,21 +35,18 @@ layout('header', $data);
                 </div>
                 <div class="col-lg-8">
                     <div class="card">
-                        <?php
-                        if (!empty($msg)) {
-                            getMSG($msg, $msg_type);
-                        }
-                        ?>
-                        <form class="user" method="post">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-sm-9 text-secondary">
 
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
+                        <form class="user" method="post">
+
+                            <div class="card-body" style="padding-bottom: 0">
+                                <?php
+                                if (!empty($msg)) {
+                                    getMSG($msg, $msg_type);
+                                }
+                                ?>
+                                <div class="row mb-4" style="align-items: center">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Địa chỉ của tôi</h6>
+                                        <h5>Địa chỉ của tôi</h5>
                                     </div>
                                     <div class="col-sm-9 text-secondary d-flex justify-content-between">
                                         <p></p><a href="?module=address&action=add" class="btn btn-danger"
@@ -67,33 +64,40 @@ layout('header', $data);
                                         <div class="row mb-3">
                                             <div class="col-sm-3">
                                                 <p style="font-weight : bold"><?php echo $profileUser['fullname'] ?>
-                                                    </br><?php echo $profileUser['phone_number'] ?></br>
+
+                                                </p>
+                                                <p>
+                                                    <?php echo $profileUser['phone_number'] ?>
                                                 </p>
                                             </div>
                                             <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                                <p><b><?php echo $list['address'] . ', ' . $list['district'] . ', </br>' . $list['city'] . ', ' . $list['country'] ?></b>
+                                                <p style="    color: rgba(0, 0, 0, .54);">
+                                                    <?php echo $list['address'] . ', ' . $list['district'] . ', </br>' . $list['city'] . ', ' . $list['country'] ?>
                                                     <?php
                                                     if ($list['is_default'] == 1) {
-                                                        echo '<br><span style="color: green;">Địa chỉ mặc định</span>';
+                                                        echo '<br><span style="color: red; border: 2px solid red; padding: 2px;">Mặc định</span>';
                                                     } else {
-                                                        echo '<a href="?module=address&action=setdefault&id=' . $list['id'] . '">Đặt làm mặc định</a>';
+                                                        echo '<br><span style="color: rgba(0, 0, 0, .54); border: 2px solid rgba(0, 0, 0, .54); padding: 2px;"><a style="color: rgba(0, 0, 0, .54);" href="?module=address&action=setdefault&id=' . $list['id'] . '">Thiết lập mặc định</a></span>';
                                                     }
                                                     ?>
                                                 </p>
-                                                <a href="?module=address&action=delete&id=<?php echo $list['id'] ?>"
-                                                    onclick="return confirm('Bạn có muốn xóa địa chỉ này?')">Xóa</td></a>
-                                                <a href="?module=address&action=edit&id=<?php echo $list['id'] ?>">Cập nhật</a>
+                                                <div class="action-link" style="display: flex;">
+                                                    <div class="action-link-delete">
+                                                        <a href="?module=address&action=delete&id=<?php echo $list['id'] ?>"
+                                                            onclick="return confirm('Bạn có muốn xóa địa chỉ này?')">Xóa</td></a>
+                                                    </div>
+                                                    <div class="action-link-edit">
+                                                        <a href="?module=address&action=edit&id=<?php echo $list['id'] ?>">Cập
+                                                            nhật</a>
+                                                    </div>
+
+
+                                                </div>
+
 
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col-sm-5">
 
-                                            </div>
-                                            <div class="col-sm-7 text-secondary d-flex justify-content-between">
-
-                                            </div>
-                                        </div>
                                         <?php
                                     endforeach;
                                 }
@@ -125,7 +129,7 @@ layout('footer', $data);
         background-color: #fff;
         background-clip: border-box;
         border: 0 solid transparent;
-        border-radius: .25rem;
+        border-radius: 2px;
         margin-bottom: 1.5rem;
         box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
     }
@@ -136,9 +140,24 @@ layout('footer', $data);
 
     a {
         color: #000000;
+        font-size: 15px;
     }
 
     a:hover {
         color: #e53637;
+    }
+
+    .row.mb-3 {
+        border-bottom: 1px solid #efefef;
+        padding-top: 10px;
+    }
+
+    .row.mb-4 {
+        border-bottom: 1px solid #efefef;
+        padding: 10px;
+    }
+
+    .action-link .action-link-delete {
+        padding-right: 15px;
     }
 </style>

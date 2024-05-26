@@ -51,7 +51,7 @@ $productImages = $product->getImagesByProductId($productId);
     <?php
     if (!empty($productDetail)) {
         ?>
-        <section class="shop-details">
+        <section class="shop-details" style="background-color: #fff">
             <div class="product__details__pic">
                 <div class="container">
                     <div class="row">

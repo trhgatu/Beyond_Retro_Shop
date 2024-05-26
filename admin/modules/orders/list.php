@@ -46,12 +46,13 @@ $old = getFlashData('old');
                                     <th>STT</th>
                                     <th>Họ tên</th>
                                     <th>Email</th>
-                                    <th>Số điện thoại</th>
+                                    <th>SĐT</th>
                                     <th>Địa chỉ </th>
                                     <th>Note</th>
                                     <th>Ngày đặt hàng</th>
                                     <th>Trạng thái</th>
                                     <th width="10%">Tổng tiền</th>
+                                    <th>CTĐH</th>
 
                                 </thead>
                                 <tbody>
@@ -63,25 +64,25 @@ $old = getFlashData('old');
                                             ?>
                                             <tr>
                                                 <td>
-                                                    <?php echo $count; ?>
+                                                    <p><?php echo $count; ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['fullname'] ?>
+                                                    <p><?php echo $item['fullname'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['email'] ?>
+                                                    <p><?php echo $item['email'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['phone_number'] ?>
+                                                    <p><?php echo $item['phone_number'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['address'] ?>
+                                                    <p><?php echo $item['address'] . ", " .  $item['city'] . ", " . $item['country'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['note'] ?>
+                                                    <p><?php echo $item['note'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <?php echo $item['order_date'] ?>
+                                                    <p><?php echo $item['order_date'] ?></p>
                                                 </td>
                                                 <td>
                                                     <?php
@@ -128,3 +129,11 @@ $old = getFlashData('old');
     </div>
 
 </div>
+<style>
+    p {
+        font-size: 13px;
+    }
+    th{
+        font-size: 14px;
+    }
+</style>

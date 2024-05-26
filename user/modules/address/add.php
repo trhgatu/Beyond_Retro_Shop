@@ -28,68 +28,72 @@ layout('header', $data);
                 if (!empty($profileUser)):
                     include "modules/account/card.php";
                     ?>
-            </div>
-            <div class="col-lg-8">
-                <div class="card">
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
 
-                    <form class="user" method="post">
-                        <?php
-                        if (!empty($msg)) {
-                            getMSG($msg, $msg_type);
-                        }
-                        ?>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-sm-2">
-                                    <h6 class="mb-0">Địa chỉ</h6>
+                        <form class="user" method="post">
+                            <?php
+                            if (!empty($msg)) {
+                                getMSG($msg, $msg_type);
+                            }
+                            ?>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-sm-2">
+                                        <h6 class="mb-0">Địa chỉ</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                        <input type="text" class="form-control" name="address"
+                                            placeholder="Số nhà, tên đường"></input>
+                                    </div>
                                 </div>
-                                <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                    <input type="text" class="form-control" name="address"
-                                        placeholder="Số nhà, tên đường"></input>
+                                <div class="row mb-3">
+                                    <div class="col-sm-2">
+                                        <h6 class="mb-0">Quận</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                        <input type="text" class="form-control" name="district"
+                                            placeholder="Vd: Tân Phú"></input>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-2">
-                                    <h6 class="mb-0">Quận</h6>
+                                <div class="row mb-3">
+                                    <div class="col-sm-2">
+                                        <h6 class="mb-0">Thành phố</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                        <input type="text" class="form-control" name="city"
+                                            placeholder="Vd: TP.HCM"></input>
+                                    </div>
                                 </div>
-                                <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                    <input type="text" class="form-control" name="district"
-                                        placeholder="Vd: Tân Phú"></input>
+                                <div class="row mb-3">
+                                    <div class="col-sm-2">
+                                        <h6 class="mb-0">Quốc gia</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary d-flex justify-content-between">
+                                        <input type="text" class="form-control" name="country"
+                                            placeholder="Vd: Việt Nam"></input>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-2">
-                                    <h6 class="mb-0">Thành phố</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                    <input type="text" class="form-control" name="city" placeholder="Vd: TP.HCM"></input>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-2">
-                                    <h6 class="mb-0">Quốc gia</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                    <input type="text" class="form-control" name="country"
-                                        placeholder="Vd: Việt Nam"></input>
-                                </div>
-                            </div>
 
 
-                            <div class="row">
-                                <div class="col-sm-2"></div>
-                                <div class="col-sm-9 text-secondary">
-                                    <button class="form-control" type="submit">Xác nhận</button>
+                                <div class="row">
+                                    <div class="col-sm-2"></div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <div class="btn-submit">
+                                        <button class="btn btn-primary" type="submit">Xác nhận</button>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+
                 </div>
 
             </div>
-
         </div>
-    </div>
     </div>
 
     <?php
@@ -126,5 +130,12 @@ layout('footer', $data);
 
     a:hover {
         color: #e53637;
+    }
+
+    .row.mb-3 {
+        padding: 4px;
+    }
+    .btn-submit{
+        padding-top: 20px;
     }
 </style>

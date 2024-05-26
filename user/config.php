@@ -6,6 +6,7 @@ const _ACTION = 'home';
 const _CODE = true;
 define('_WEB_HOST', 'http://' . $_SERVER['HTTP_HOST'] . '/Beyond_Retro/user');
 define('_WEB_HOST_TEMPLATE', _WEB_HOST. '/templates');
+define('BASE_URL', 'http://localhost/Beyond_Retro/include/');
 
 //Thiết lập path
 define('_WEB_PATH', __DIR__);

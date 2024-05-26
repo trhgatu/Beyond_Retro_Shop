@@ -116,7 +116,7 @@ class Account
             }
         }
     }
-    public function updateInfo()
+    public function updateInfo($filterAll, $avatarPath)
     {
         $token = getSession('tokenlogin');
         if (!empty($token)) {
@@ -129,70 +129,100 @@ class Account
             if (!empty($userQuery['user_id'])) {
                 $userId = $userQuery['user_id'];
                 $filterAll = filter();
-                $error = []; // Mảng chứa lỗi
-                // Validate fullname: bắt buộc phải nhập, họ tên có ít nhất 5 ký tự
-                if (empty($filterAll['fullname'])) {
-                    $error['fullname']['required'] = 'Họ tên bắt buộc phải nhập.';
-                } else {
-                    if (strlen($filterAll['fullname']) < 5) {
-                        $error['fullname']['min'] = 'Họ tên phải có ít nhất 5 ký tự.';
-                    }
-                }
-                // Kiểm tra xem avatar có được chọn không
-                if (!empty($filterAll['avatar'])) {
-                    // Nếu có avatar được chọn, thực hiện việc cập nhật dữ liệu vào CSDL
-                    if (empty($error)) {
-                        $activeToken = sha1(uniqid() . time());
-                        $dataUpdate = [
-                            'fullname' => $filterAll['fullname'],
-                            'avatar' => $filterAll['avatar'],
-                            'updated_at' => date('Y-m-d H:i:s'),
-                        ];
-                        $condition = "id = $userId";
-                        $UpdateStatus = update('user', $dataUpdate, $condition);
-                        if ($UpdateStatus) {
-                            setFlashData('msg', 'Cập nhật thông tin thành công.');
-                            setFlashData('msg_type', 'success');
-                            redirect('?module=account&action=profile');
-                        } else {
-                            setFlashData('msg', 'Cập nhật thông tin thất bại, vui lòng thử lại.');
-                            setFlashData('msg_type', 'danger');
-                        }
 
-                    } else {
-                        setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
-                        setFlashData('msg_type', 'danger');
-                        setFlashData('error', $error);
-                        setFlashData('old', $filterAll);
-                    }
-                } else {
-                    // Nếu không có avatar được chọn, chỉ cần cập nhật fullname
-                    if (empty($error)) {
-                        $dataUpdate = [
-                            'fullname' => $filterAll['fullname'],
-                            'updated_at' => date('Y-m-d H:i:s'),
-                        ];
-                        $condition = "id = $userId";
-                        $UpdateStatus = update('user', $dataUpdate, $condition);
-                        if ($UpdateStatus) {
-                            setFlashData('msg', 'Cập nhật thông tin thành công.');
-                            setFlashData('msg_type', 'success');
-                            redirect('?module=account&action=profile');
-                        } else {
-                            setFlashData('msg', 'Cập nhật thông tin thất bại, vui lòng thử lại.');
-                            setFlashData('msg_type', 'danger');
-                        }
-                    } else {
-                        setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
-                        setFlashData('msg_type', 'danger');
-                        setFlashData('error', $error);
-                        setFlashData('old', $filterAll);
-                    }
+                $dataUpdate = [
+                    'fullname' => $filterAll['fullname'],
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ];
+                if ($avatarPath) {
+                    $dataUpdate['avatar'] = basename($avatarPath);
                 }
 
+                $condition = "id = $userId";
+                $UpdateStatus = update('user', $dataUpdate, $condition);
+
+                if ($UpdateStatus) {
+                    setFlashData('msg', 'Cập nhật thông tin thành công.');
+                    setFlashData('msg_type', 'success');
+                    redirect('?module=account&action=profile');
+                } else {
+                    setFlashData('msg', 'Cập nhật thông tin thất bại, vui lòng thử lại.');
+                    setFlashData('msg_type', 'danger');
+                }
                 redirect('?module=account&action=profile');
             }
         }
+    }
+    public function updateInfoAdmin($filterAll, $avatarAdminPath)
+    {
+        $token = getSession('tokenlogin_admin');
+        if (!empty($token)) {
+            $query = "SELECT user_id FROM tokenlogin_admin WHERE token = :token";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':token', $token);
+            $stmt->execute();
+            $userQuery = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!empty($userQuery['user_id'])) {
+                $userId = $userQuery['user_id'];
+                $filterAll = filter();
+                $dataUpdate = [
+                    'fullname' => $filterAll['fullname'],
+                    'phone_number' =>  $filterAll['phone_number'],
+                    'updated_at' => date('Y-m-d H:i:s'),
+
+                ];
+                if ($avatarAdminPath) {
+                    $dataUpdate['avatar'] = basename($avatarAdminPath);
+                }
+                $condition = "id = $userId";
+                $UpdateStatus = update('user', $dataUpdate, $condition);
+
+                if ($UpdateStatus) {
+                    setFlashData('msg', 'Cập nhật thông tin thành công.');
+                    setFlashData('msg_type', 'success');
+                    redirect('?module=account&action=profile');
+                } else {
+                    setFlashData('msg', 'Cập nhật thông tin thất bại, vui lòng thử lại.');
+                    setFlashData('msg_type', 'danger');
+                }
+                redirect('?module=account&action=profile');
+            }
+        }
+    }
+    public function uploadAvatar()
+    {
+        if (empty($_FILES['avatar'])) {
+            throw new Exception('Invalid upload');
+        }
+        switch ($_FILES['avatar']['error']) {
+            case UPLOAD_ERR_OK;
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                throw new Exception('No file upload');
+            default:
+                throw new Exception('An error occured');
+        }
+        if ($_FILES['avatar']['size'] > 1000000) {
+            throw new Exception('File too large');
+        }
+        $mime_types = ['image/png', 'image/jpeg', 'image/gif'];
+        $file_info = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($file_info, $_FILES['avatar']['tmp_name']);
+
+        if (!in_array($mime_type, $mime_types)) {
+            throw new Exception('invalid file type');
+        }
+        $pathinfo = pathinfo($_FILES['avatar']['name']);
+        $fname = 'avatar';
+        $extension = $pathinfo['extension'];
+        $dest = '../images/avatar/' . $fname . '.' . $extension;
+        $i = 1;
+        while (file_exists($dest)) {
+            $dest = '../images/avatar' . $fname . "-$i." . $extension;
+            $i++;
+        }
+        return $dest;
     }
 }
 

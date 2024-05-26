@@ -89,7 +89,6 @@ class Authen
             setFlashData('msg', 'Vui lòng nhập email và mật khẩu.');
             setFlashData('msg_type', 'danger');
         }
-        redirect('http://localhost/Beyond_Retro/include/');
     }
 
 
@@ -104,7 +103,7 @@ class Authen
 
             if (!empty($userQuery)) {
                 $passwordHash = $userQuery['password'];
-                $userId = $userQuery['id'];
+                $adminId = $userQuery['id'];
                 $roleId = $userQuery['role_id'];
 
                 $roleQuery = oneRaw("SELECT name FROM role WHERE id = $roleId");
@@ -114,12 +113,13 @@ class Authen
                     if ($userRole == 'Admin') {
                         $tokenLogin = sha1(uniqid() . time());
                         $dataInsert = [
-                            'user_id' => $userId,
+                            'user_id' => $adminId,
                             'token' => $tokenLogin,
                             'created_at' => date('Y-m-d H:i:s'),
                         ];
                         $insertStatus = insert('tokenlogin_admin', $dataInsert);
                         if ($insertStatus) {
+                            setSession('admin_id', $adminId);
                             setSession('tokenlogin_admin', $tokenLogin);
                             redirect('?module=home&action=dashboard');
                         } else {
@@ -130,36 +130,34 @@ class Authen
                     } else {
                         setFlashData('msg', 'Bạn không có quyền truy cập.');
                         setFlashData('msg_type', 'danger');
-                        redirect('?module=authen&action=login');
+
                     }
                 } else {
                     setFlashData('msg', 'Mật khẩu không chính xác.');
                     setFlashData('msg_type', 'danger');
-                    redirect('?module=authen&action=login');
+
                 }
             } else {
                 setFlashData('msg', 'Email không tồn tại.');
                 setFlashData('msg_type', 'danger');
-                redirect('?module=authen&action=login');
+
             }
         } else {
             setFlashData('msg', 'Vui lòng nhập email và mật khẩu.');
             setFlashData('msg_type', 'danger');
-            redirect('?module=authen&action=login');
+
         }
     }
 
     public static function logout_user($conn, $user_id)
     {
-        // Kiểm tra xem session có tồn tại không trước khi sử dụng
         if (getSession('tokenlogin') && getSession('user_id')) {
             $token = getSession('tokenlogin');
             $userId = getSession('user_id');
 
-            // Xóa phiên đăng nhập
+
             delete('tokenlogin', "token = '$token'");
 
-            // Cập nhật trạng thái last_active của người dùng
             $updateUserQuery = "UPDATE user SET last_active = NOW() WHERE id = :user_id";
             $stmtUser = $conn->prepare($updateUserQuery);
             $stmtUser->bindParam(':user_id', $userId, PDO::PARAM_INT);
@@ -168,6 +166,8 @@ class Authen
             // Xóa session
             removeSession('tokenlogin');
             removeSession('user_id');
+            removeSession('cart');
+            removeSession('cart_count');
 
             // Chuyển hướng người dùng
             redirect('http://localhost/Beyond_Retro/include/');
@@ -176,14 +176,26 @@ class Authen
     }
 
 
-
-
-    public static function logout_admin()
+    public static function logout_admin($conn, $user_id)
     {
-        $token = getSession('tokenlogin_admin');
-        delete('tokenlogin_admin', "token='$token'");
-        removeSession('tokenlogin_admin');
-        redirect('?module=authen&action=login');
+        if (getSession('tokenlogin_admin') && getSession('admin_id')) {
+            $token = getSession('tokenlogin_admin');
+            $adminId = getSession('admin_id');
+
+
+            delete('tokenlogin_admin', "token = '$token'");
+
+            $updateUserQuery = "UPDATE user SET last_active = NOW() WHERE id = :user_id";
+            $stmtUser = $conn->prepare($updateUserQuery);
+            $stmtUser->bindParam(':user_id', $adminId, PDO::PARAM_INT);
+            $stmtUser->execute();
+
+            // Xóa session
+            removeSession('tokenlogin_admin');
+            removeSession('admin_id');
+
+            redirect('?module=authen&action=login');
+        }
     }
     public static function register()
     {
@@ -206,11 +218,16 @@ class Authen
 
         if ($insertStatus) {
             $linkActive = _WEB_HOST . '?module=authen&action=active&token=' . $activeToken;
-            $subject = $filterAll['fullname'] . 'Vui lòng kích hoạt tài khoản';
-            $content = 'Chào' . $filterAll['fullname'] . '.</>';
-            $content .= 'Click vào link này để kích hoạt tài khoản : </br>';
-            $content .= $linkActive . '</br>';
-            $content .= 'Trân trọng cảm ơn';
+            $subject = $filterAll['fullname'] .', '.  'Hãy kích hoạt tài khoản Beyond Retro của bạn';
+            $content = 'Chào ' . $filterAll['fullname'] . ',' .' Chào mừng bạn đến với Beyond Retro !' . '<br>';
+            $content .= 'Cảm ơn bạn đã đăng ký tài khoản tại Beyond Retro. Để hoàn tất quá trình đăng ký và bắt đầu mua sắm, bạn cần kích hoạt tài khoản của mình.  <br>';
+            $content .= 'Vui lòng nhấp vào liên kết dưới đây để kích hoạt tài khoản của bạn: ' . '<br>';
+            $content .= $linkActive . '<br>';
+            $content .= 'Nếu bạn gặp bất kỳ vấn đề nào trong quá trình kích hoạt tài khoản, vui lòng liên hệ với chúng tôi qua email support@beyondretro.com.' . '<br>';
+            $content .= 'Chúng tôi rất mong được phục vụ bạn!' . '<br>';
+            $content .= 'Trân trọng' . '<br>';
+            $content .= 'Đội ngũ hỗ trợ Beyond Retro' . '<br>';
+
             //GỬi mail
             $sendMail = sendMail($filterAll['email'], $subject, $content);
             if ($sendMail) {
@@ -220,12 +237,11 @@ class Authen
                 setFlashData('msg', 'Hệ thống đang gặp sự cố, vui lòng thử lại sau');
                 setFlashData('msg_type', 'danger');
             }
-
         } else {
             setFlashData('msg', 'Đăng ký thất bại');
             setFlashData('msg_type', 'danger');
         }
-        redirect('?module=authen&action=register');
+        redirect('?module=authen&action=login');
     }
     public static function forgot()
     {

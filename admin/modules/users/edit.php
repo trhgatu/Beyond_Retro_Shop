@@ -3,6 +3,9 @@
 if (!defined("_CODE")) {
     die("Access Denied !");
 }
+require_once '../class/user.php';
+$user = new User($conn);
+
 if (!isAdminLogin()) {
     redirect('?module=authen&action=login');
 }
@@ -61,27 +64,45 @@ if (isPost()) {
     }
 
     if (empty($error)) {
-        $activeToken = sha1(uniqid() . time());
-        $dataUpdate = [
-            'fullname' => $filterAll['fullname'],
-            'avatar' => $filterAll['avatar'],
-            'email' => $filterAll['email'],
-            'phone_number' => $filterAll['phone_number'],
-            'status' => $filterAll['status'],
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
-        if (!empty($filterAll['password'])) {
-            $dataUpdate['password'] = password_hash($filterAll['password'], PASSWORD_DEFAULT);
-        }
-        $condition = "id = $userId";
-        $UpdateStatus = update('user', $dataUpdate, $condition);
-        if ($UpdateStatus) {
-            setFlashData('msg', 'Sửa người dùng thành công.');
-            setFlashData('msg_type', 'success');
-            redirect('?module=users&action=list');
-        } else {
-            setFlashData('msg', 'Sửa người dùng thất bại, vui lòng thử lại.');
-            setFlashData('msg_type', 'danger');
+        try {
+            if (empty($_FILES['avatar'])) {
+                throw new Exception('Invalid upload');
+            }
+            switch ($_FILES['avatar']['error']) {
+                case UPLOAD_ERR_OK;
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    throw new Exception('No file upload');
+                default:
+                    throw new Exception('An error occured');
+            }
+            if ($_FILES['avatar']['size'] > 1000000) {
+                throw new Exception('File too large');
+            }
+            $mime_types = ['image/png', 'image/jpeg', 'image/gif'];
+            $file_info = finfo_open(FILEINFO_MIME_TYPE);
+            $mime_type = finfo_file($file_info, $_FILES['avatar']['tmp_name']);
+
+            if (!in_array($mime_type, $mime_types)) {
+                throw new Exception('invalid file type');
+            }
+            $pathinfo = pathinfo($_FILES['avatar']['name']);
+            $fname = 'avatar';
+
+            $extension = $pathinfo['extension'];
+            $dest = '../images/avatar/' . $fname . '.' . $extension;
+            $i = 1;
+            while (file_exists($dest)) {
+                $dest = '../images/avatar/' . $fname . "-$i." . $extension;
+                $i++;
+            }
+            if (move_uploaded_file($_FILES['avatar']['tmp_name'], $dest)) {
+                $user->edit($filterAll, $dest);
+            } else {
+                throw new Exception('Unable to move file');
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage();
         }
     } else {
         setFlashData('msg', 'Vui lòng kiểm tra lại dữ liệu');
@@ -123,7 +144,7 @@ if ($userDetails) {
                                 getMSG($msg, $msg_type);
                             }
                             ?>
-                            <form class="user" method="post">
+                            <form class="user" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col">
                                         <div class="avatar">
