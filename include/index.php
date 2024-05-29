@@ -42,7 +42,6 @@ $data = [
     layout('header', $data);
     layout('search', $data);
     include 'main.php';
-    var_dump(getSession());
     layout('menu', $data);
     layout('footer', $data);
     ?>

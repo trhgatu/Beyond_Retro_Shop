@@ -86,11 +86,6 @@ layout('header', $data);
                                                         <a href="?module=address&action=delete&id=<?php echo $list['id'] ?>"
                                                             onclick="return confirm('Bạn có muốn xóa địa chỉ này?')">Xóa</td></a>
                                                     </div>
-                                                    <div class="action-link-edit">
-                                                        <a href="?module=address&action=edit&id=<?php echo $list['id'] ?>">Cập
-                                                            nhật</a>
-                                                    </div>
-
 
                                                 </div>
 

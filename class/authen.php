@@ -193,7 +193,6 @@ class Authen
             // Xóa session
             removeSession('tokenlogin_admin');
             removeSession('admin_id');
-
             redirect('?module=authen&action=login');
         }
     }
@@ -261,10 +260,10 @@ class Authen
                     //Tạo link reset, khôi phục mật khẩu
                     $linkReset = _WEB_HOST . '?module=authen&action=reset&token=' . $forgotToken;
                     //Gửi mail cho người dùng
-                    $subject = 'Yêu cầu khôi phục mật khẩu';
-                    $content = 'Chào bạn.</br>';
-                    $content .= 'Chúng tôi nhận được yêu cầu khôi phục mật khẩu từ bạn. Vui lòng truy cập vào đường link để khôi phục.';
-                    $content .= $linkReset . '</br>';
+                    $subject = '[Beyond Retro] Yêu cầu khôi phục mật khẩu';
+                    $content = 'Chào bạn.<br>';
+                    $content .= 'Chúng tôi nhận được yêu cầu khôi phục mật khẩu từ bạn. Vui lòng truy cập vào đường link để tiến hành khôi phục.<br>';
+                    $content .= $linkReset . '<br>';
                     $sendEmail = sendMail($email, $subject, $content);
                     if ($sendEmail) {
                         setFlashData('msg', 'Vui lòng kiểm tra Email để đặt lại mật khẩu.');
@@ -340,13 +339,15 @@ class Authen
                         redirect('?module=authen&action=reset&token=' . $token);
                     }
                 }
+
                 $msg = getFlashData('msg');
                 $msg_type = getFlashData('msg_type');
                 $error = getFlashData('error');
                 ?>
 
+
                 <head>
-                    <title>Login 04</title>
+
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -358,7 +359,9 @@ class Authen
 
                 </head>
 
+
                 <body class="bg-gradient-primary">
+
                     <div class="container">
                         <div class="card o-hidden border-0 shadow-lg my-5">
                             <div class="card-body p-0">
@@ -367,7 +370,7 @@ class Authen
                                     <div class="col-lg-7">
                                         <div class="p-5">
                                             <div class="text-center">
-                                                <h1 class="h4 text-gray-900 mb-4">Đặt lại mật khẩu</h1>
+                                                <h1 class="h4 text-gray-900 mb-4" style="text-transform: uppercase">Đặt lại mật khẩu</h1>
                                             </div>
                                             <?php
                                             if (!empty($msg)) {

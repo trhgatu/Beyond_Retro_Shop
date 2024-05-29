@@ -10,10 +10,7 @@ require_once '../class/category.php';
 $data = [
     'pageTitle' => 'Shop',
 ];
-//Kiểm tra trạng thái đăng nhập
-if (!isUserLogin()) {
-    redirect('../user/?module=authen&action=login');
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -155,15 +152,14 @@ if (!isUserLogin()) {
                                         </div>
                                         <div class="product__item__title">
                                             <a
-                                                href="http://localhost/Beyond_Retro/include/shop-details.php?id=<?php echo $item['id']; ?>">
+                                                href="<?php BASE_URL; ?>shop-details.php?id=<?php echo $item['id']; ?>">
                                                 <?php echo $item['name'] ?>
                                             </a>
-                                        </div>
-                                        <div class="product__item__text">
                                             <h5 style="font-weight: 700">
                                                 <?php echo number_format($item['price'], 0, ',', '.') ?>₫
                                             </h5>
                                         </div>
+
                                     </div>
                                 </div>
                                 <?php

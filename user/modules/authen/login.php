@@ -42,7 +42,7 @@ $msg_type = getFlashData('msg_type');
 			<div class="row justify-content-center">
 				<div class="col-md-12 col-lg-10">
 					<div class="wrap d-md-flex">
-						<div class="img" style="background-image: url(images/bg-1.jpg);">
+						<div class="img" style="background-image: url(../img/login_background.jpg);">
 						</div>
 						<div class="login-wrap p-4 p-md-5">
 							<div class="d-flex">
@@ -61,7 +61,7 @@ $msg_type = getFlashData('msg_type');
 								</div>
 								<div class="form-group mb-3">
 									<label class="label" for="password">Password</label>
-									<input type="password" class="form-control" placeholder="Password" name="password">
+									<input type="password" class="form-control" placeholder="Mật khẩu" name="password">
 								</div>
 								<div class="form-group">
 									<button type="submit" class="form-control" style="color: #ffffff; background-color: #000000;">Đăng

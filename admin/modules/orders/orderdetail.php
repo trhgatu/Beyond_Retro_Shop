@@ -177,9 +177,10 @@ if ($orderDetails) {
                                             <?php
                                             if ($status == 0) {
                                                 echo "Đơn hàng đang chờ để xác nhận.";
-
                                             } else if ($status == 1) {
                                                 echo "Đơn hàng đã được xác nhận.";
+                                            }else{
+                                                echo "Đơn hàng đã hủy.";
                                             }
                                             ?>
                                         </div>

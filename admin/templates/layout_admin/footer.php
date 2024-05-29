@@ -12,10 +12,10 @@ if (!defined("_CODE")) {
     <meta name="author" content="">
 </head>
 <!-- Footer -->
-<footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2021</span>
+<footer class="sticky-footer" style="padding-top: 10px">
+    <div class="container my-auto text-white">
+        <div class="copyright text-center my-auto" >
+            <span>&copy; Beyond Retro 2024</span>
         </div>
     </div>
 </footer>

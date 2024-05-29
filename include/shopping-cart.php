@@ -11,14 +11,11 @@ require_once '../class/cart.php';
 $data = [
     'pageTitle' => 'Giỏ hàng'
 ];
-//Kiểm tra trạng thái đăng nhập
-if (!isUserLogin()) {
-    redirect('../user/?module=authen&action=login');
-}
+
+
 if (isPost() && isset($_POST['update-cart'])) {
     $cart = new Cart($conn);
     $cart->updateCart();
-
 }
 ?>
 <!DOCTYPE html>
@@ -47,8 +44,8 @@ if (isPost() && isset($_POST['update-cart'])) {
                     <div class="breadcrumb__text">
                         <h4>Giỏ hàng</h4>
                         <div class="breadcrumb__links">
-                            <a href="./index.html">Home</a>
-                            <a href="http://localhost/Beyond_Retro/include/shop.php">Shop</a>
+                            <a href="<?php echo BASE_URL; ?>index.php">Home</a>
+                            <a href="<?php echo BASE_URL; ?>shop.php">Shop</a>
                             <span>Giỏ hàng</span>
                         </div>
                     </div>
@@ -73,22 +70,19 @@ if (isPost() && isset($_POST['update-cart'])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <?php
-                                        $totalPrice = 0;
-                                        if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
-                                            foreach ($_SESSION['cart'] as $productId => $quantity) {
-                                                $product = new Product($conn);
-                                                $productDetail = $product->getByProductId($productId);
+                                    <?php
+                                    $totalPrice = 0;
+                                    if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+                                        foreach ($_SESSION['cart'] as $productId => $quantity) {
+                                            $product = new Product($conn);
+                                            $productDetail = $product->getByProductId($productId);
+                                            foreach ($productDetail as $item) {
                                                 ?>
-                                                <?php
-                                                foreach ($productDetail as $item) {
-                                                    ?>
                                                 <tr>
                                                     <td class="product__cart__item">
                                                         <div class="product__cart__item__pic">
-                                                            <img src="../images/products/thumbnail/<?php echo $item['thumbnail']; ?>" alt=""
-                                                                style="max-width: 90px">
+                                                            <img src="../images/products/thumbnail/<?php echo $item['thumbnail']; ?>"
+                                                                alt="" style="max-width: 90px">
                                                         </div>
                                                         <div class="product__cart__item__text">
                                                             <h6><?php echo $item['name']; ?></h6>
@@ -101,30 +95,24 @@ if (isPost() && isset($_POST['update-cart'])) {
                                                                 style="border: 1px solid #e5e5e5;position: relative;width: 55px">
                                                                 <input type="number" name="quantity[<?php echo $productId; ?>]"
                                                                     value="<?php echo $quantity; ?>">
-
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td class="cart__price">
                                                         <?php echo number_format($item['price'] * $quantity, 0, ',', '.') ?>₫
                                                     </td>
-
                                                     <td class="cart__close"><a
                                                             href="../user/?module=cart&action=removeproduct&id=<?php echo $productId; ?>"><i
                                                                 class="fa fa-close"></i></a></td>
                                                 </tr>
                                                 <?php
                                                 $totalPrice += $item['price'] * $quantity;
-                                                }
-                                                ?>
-                                            <?php
                                             }
-                                        } else {
-                                            echo "<tr><td colspan='4'>Giỏ hàng của bạn đang trống!</td></tr>";
                                         }
-                                        ?>
-                                    </tr>
-
+                                    } else {
+                                        echo "<tr><td colspan='4'>Giỏ hàng của bạn đang trống!</td></tr>";
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -134,35 +122,31 @@ if (isPost() && isset($_POST['update-cart'])) {
                                     <a href="http://localhost/Beyond_Retro/include/shop.php">Tiếp tục mua sắm</a>
                                 </div>
                             </div>
-
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="continue__btn update__btn">
-                                    <input type="submit" value="Cập nhật giỏ hàng" class="primary-btn"
-                                        name="update-cart">
-
+                            <?php if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])): ?>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="continue__btn update__btn">
+                                        <input type="submit" value="Cập nhật giỏ hàng" class="primary-btn"
+                                            name="update-cart">
+                                    </div>
                                 </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="cart__total">
                             <h6>Tổng giỏ hàng</h6>
                             <ul>
-
                                 <li>Tổng tiền<span><?php echo number_format($totalPrice, 0, ',', '.') ?>₫</span></li>
                             </ul>
-                            <a href="http://localhost/Beyond_Retro/include/checkout.php" class="primary-btn">Thanh
-                                toán</a>
+                            <a href="<?php BASE_URL ?>checkout.php" class="primary-btn">Đặt
+                                hàng</a>
                         </div>
-
-
                     </div>
-
                 </div>
             </div>
-
         </section>
     </form>
+
     <?php
     layout('footer', $data)
         ?>
@@ -188,5 +172,4 @@ if (isPost() && isset($_POST['update-cart'])) {
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
 </body>
-
 </html>

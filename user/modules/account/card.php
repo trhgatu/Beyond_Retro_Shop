@@ -29,7 +29,7 @@
                 <h6 class="mb-0">
                     <a href="?module=orders&action=list">
                         <img src="../img/order-delivery.png " style="width: 25px; height: 25px">
-                        Đơn mua
+                        Đơn hàng
                     </a>
                 </h6>
             </li>

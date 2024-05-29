@@ -47,7 +47,7 @@ layout('header', $data);
                                         <h6 class="mb-0" style="font-weight: bold">Mật khẩu</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                        <input type="text" class="form-control" name="password"
+                                        <input type="password" class="form-control" name="password"
                                             placeholder="Nhập mật khẩu hiện tại để xác minh"></input>
                                     </div>
                                 </div>

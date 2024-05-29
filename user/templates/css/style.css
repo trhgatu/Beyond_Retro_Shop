@@ -1116,7 +1116,7 @@ ol {
 	display: block;
 	font-weight: 400;
 	text-transform: uppercase;
-	height: 50px;
+	height: 30px;
 }
 .product__item__text {
 	padding-top: 10px;
@@ -1924,9 +1924,7 @@ ol {
 	color: #b7b7b7;
 }
 
-.product__details__tab {
-	padding-top: 60px;
-}
+
 
 .product__details__tab .nav-tabs {
 	border-bottom: 1px solid #e5e5e5;
@@ -1958,7 +1956,7 @@ ol {
 }
 
 .product__details__tab__content {
-	padding-top: 35px;
+	padding-top: 0;
 }
 
 .note {

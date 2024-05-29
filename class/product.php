@@ -91,8 +91,6 @@ class Product
             'description' => $filterAll['description'],
             'created_at' => date('Y-m-d H:i:s'),
             'flag' => $filterAll['flag'],
-            'new' => $filterAll['new'],
-            'bestseller' => $filterAll['bestseller'],
         ];
         $insertStatus = insert('product', $dataInsert);
         if ($insertStatus) {
@@ -118,17 +116,13 @@ class Product
     public function updateProduct($filterAll, $dest, $upload_dest)
     {
         $productId = $filterAll['id'];
-        $new = isset($filterAll['new']) ? 1 : 0;
         $flag = isset($filterAll['flag']) ? 1 : 0;
-        $bestseller = isset($filterAll['bestseller']) ? 1 : 0;
         $dataUpdateProduct = [
             'name' => $filterAll['name'],
             'category_id' => $filterAll['category_id'],
             'price' => $filterAll['price'],
             'description' => $filterAll['description'],
-            'new' => $new,
             'flag' => $flag,
-            'bestseller' => $bestseller,
             'updated_at' => date('Y-m-d H:i:s'),
         ];
         if (!empty($dest)) {
@@ -139,19 +133,22 @@ class Product
         $updateStatus = update('product', $dataUpdateProduct, $condition);
 
         if ($updateStatus) {
-            $deleteCondition = "product_id = $productId";
-            delete('galery', $deleteCondition);
-
-            foreach ($upload_dest as $image_path) {
-                if (!in_array(basename($image_path), $this->getImagesByProductId($productId))) {
-                    $dataUpdateImage = [
-                        'product_id' => $productId,
-                        'images_path' => basename($image_path),
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ];
-                    insert('galery', $dataUpdateImage);
+            // Xóa ảnh cũ trong thư viện nếu có ảnh mới được upload
+            if (!empty($upload_dest)) {
+                $deleteCondition = "product_id = $productId";
+                delete('galery', $deleteCondition);
+                foreach ($upload_dest as $image_path) {
+                    if (!in_array(basename($image_path), $this->getImagesByProductId($productId))) {
+                        $dataUpdateImage = [
+                            'product_id' => $productId,
+                            'images_path' => basename($image_path),
+                            'created_at' => date('Y-m-d H:i:s'),
+                        ];
+                        insert('galery', $dataUpdateImage);
+                    }
                 }
             }
+
             setFlashData('msg', 'Cập nhật thông tin sản phẩm thành công.');
             setFlashData('msg_type', 'success');
             redirect('?module=products&action=list');
@@ -161,6 +158,7 @@ class Product
             redirect('?module=products&action=edit');
         }
     }
+
     public function listProduct()
     {
         $products = array();
@@ -203,16 +201,23 @@ class Product
             $productDetail = getRaw("SELECT * FROM product WHERE id = $productId");
             if ($productDetail > 0) {
                 $deleteGalery = delete('galery', "product_id = $productId");
-                if ($deleteGalery) {
-                    // Xóa sản phẩm
-                    $deleteProduct = delete('product', "id = $productId");
-                    if ($deleteProduct) {
-                        setFlashData('msg', 'Xóa sản phẩm thành công.');
-                        setFlashData('msg_type', 'success');
+                $deleteOrderDetail = delete('order_details', "product_id = $productId");
+                if ($deleteOrderDetail) {
+                    if ($deleteGalery) {
+                        $deleteProduct = delete('product', "id = $productId");
+                        if ($deleteProduct) {
+                            setFlashData('msg', 'Xóa sản phẩm thành công.');
+                            setFlashData('msg_type', 'success');
+                        } else {
+                            setFlashData('msg', 'Xóa sản phẩm thất bại, vui lòng thử lại!');
+                            setFlashData('msg_type', 'danger');
+                        }
+                    } else {
+                        setFlashData('msg', "Không thể xóa hình ảnh");
+                        setFlashData('msg_type', 'danger');
                     }
-                } else {
-                    return false;
                 }
+
             } else {
                 setFlashData('msg', 'Sản phẩm không tồn tại trong hệ thống.');
                 setFlashData('msg_type', 'danger');

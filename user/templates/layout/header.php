@@ -77,8 +77,6 @@ function echoActiveClass($requestUri)
             </style>
             <div class="col-lg-3 col-md-3">
                 <div class="header__nav__option">
-                    <a href="#" class="search-switch"><img src="../img/icon/search-icon.png" alt=""
-                            style="width: 20px"></a>
                     <?php
                     if (isUserLogin()) {
                         ?>
@@ -95,7 +93,7 @@ function echoActiveClass($requestUri)
                     <?php
                     $cartCount = isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0;
                     ?>
-                    <a href="shopping-cart.php" class="cart-switch">
+                    <a href="<?php echo BASE_URL; ?>shopping-cart.php" class="cart-switch">
                         <img src="../img/icon/shopping-bag.png" style="width: 23px" alt="">
                         <span id="cart-count"><?php echo $cartCount ?></span>
                     </a>

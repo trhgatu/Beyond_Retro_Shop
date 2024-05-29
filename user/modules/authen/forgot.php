@@ -18,7 +18,6 @@ $msg_type = getFlashData('msg_type');
 ?>
 
 <head>
-    <title>Login 04</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -31,13 +30,15 @@ $msg_type = getFlashData('msg_type');
 </head>
 
 <body>
+<?php
+	layout('header', $data);
+	?>
     <section class="ftco-section">
-        <div class="container">
-
+        <div class="container"  style="margin-top: 50px">
             <div class="row justify-content-center">
                 <div class="col-md-12 col-lg-10">
                     <div class="wrap d-md-flex">
-                        <div class="img" style="background-image: url(images/bg-1.jpg);">
+                        <div class="img" style="background-image: url(../img/forgot_background.jpg);">
                         </div>
                         <div class="login-wrap p-4 p-md-5">
                             <div class="d-flex">
@@ -57,7 +58,7 @@ $msg_type = getFlashData('msg_type');
                                     <input type="text" class="form-control" placeholder="Email" name="email">
                                 </div>
 
-                                <button type="submit" class="btn btn-primary btn-user btn-block">
+                                <button type="submit" class="btn btn-primary btn-user btn-block" style="background-color: #000000">
                                     Gửi
                                 </button>
                                 <hr>
@@ -73,7 +74,9 @@ $msg_type = getFlashData('msg_type');
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-
+    <?php
+	layout('footer', $data);
+	?>
 </body>
 
 </html>

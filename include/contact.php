@@ -7,12 +7,17 @@ require_once ("../db_function/database.php");
 require_once ("../db_function/session.php");
 require_once '../class/product.php';
 require_once '../class/category.php';
+require_once '../class/feedback.php';
 $data = [
     'pageTitle' => 'Liên hệ'
 ];
 //Kiểm tra trạng thái đăng nhập
 if (!isUserLogin()) {
     redirect('../user/?module=authen&action=login');
+}
+if(isPost()){
+    $feedback = new Feedback($conn);
+    $feedback->sendFeedback($dataSend);
 }
 ?>
 <!DOCTYPE html>
@@ -50,36 +55,39 @@ if (!isUserLogin()) {
                 <div class="col-lg-6 col-md-6">
                     <div class="contact__text">
                         <div class="section-title">
-                            <span>Information</span>
-                            <h2>Contact Us</h2>
-                            <p>As you might expect of a company that began as a high-end interiors contractor, we pay
-                                strict attention.</p>
+                            <span>Thông tin</span>
+                            <h2>Liên hệ chúng tôi</h2>
+                            <p>Chúng tôi luôn trân trọng và hoan nghênh mọi ý kiến đóng góp từ phía bạn. Sự phản hồi của bạn giúp chúng tôi cải thiện và phát triển dịch vụ tốt hơn. </p>
+                            <br>
+                            <p>Nếu bạn có bất kỳ ý kiến, đề xuất hoặc thắc mắc nào, đừng ngần ngại liên hệ với chúng tôi. Mọi góp ý của bạn đều là nguồn động lực để chúng tôi không ngừng hoàn thiện và mang đến cho bạn trải nghiệm tốt nhất.</p>
+                            <br>
+                            <p> Xin cảm ơn bạn đã luôn đồng hành và ủng hộ chúng tôi. Chúng tôi mong muốn nhận được phản hồi từ bạn!</p>
                         </div>
                         <ul>
                             <li>
-                                <h4>America</h4>
-                                <p>195 E Parker Square Dr, Parker, CO 801 <br />+43 982-314-0958</p>
+                                <h4>Thành phố Hồ Chí Minh</h4>
+                                <p>140 Lê Trọng Tấn, Tây Thạnh, Tân Phú<br />081 7070 945</p>
                             </li>
-                            <li>
-                                <h4>France</h4>
-                                <p>109 Avenue Léon, 63 Clermont-Ferrand <br />+12 345-423-9893</p>
-                            </li>
+
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <div class="contact__form">
-                        <form action="#">
+                        <form method="post">
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <input type="text" placeholder="Name">
+                                <div class="col-lg-12">
+                                    <input type="text" placeholder="Họ tên" name="fullname">
                                 </div>
                                 <div class="col-lg-6">
-                                    <input type="text" placeholder="Email">
+                                    <input type="text" placeholder="Email" name="email">
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" placeholder="Số điện thoại" name="phone_number">
                                 </div>
                                 <div class="col-lg-12">
-                                    <textarea placeholder="Message"></textarea>
-                                    <button type="submit" class="site-btn">Send Message</button>
+                                    <textarea placeholder="Message" name="note"></textarea>
+                                    <button type="submit" class="site-btn">Gửi thư cho chúng tôi!</button>
                                 </div>
                             </div>
                         </form>

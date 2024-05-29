@@ -8326,8 +8326,8 @@
     .btn:hover, .btn:active, .btn:focus {
       outline: none; }
     .btn.btn-primary {
-      background: #e3b04b !important;
-      border: 1px solid #e3b04b !important;
+      background: #000000 !important;
+      border: 1px solid #000000 !important;
       color: #fff !important; }
       .btn.btn-primary:hover {
         border: 1px solid #e3b04b;

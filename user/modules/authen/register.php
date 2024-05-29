@@ -98,7 +98,7 @@ $old = getFlashData('old');
             <div class="row justify-content-center">
                 <div class="col-md-12 col-lg-10">
                     <div class="wrap d-md-flex">
-                        <div class="img" style="background-image: url(images/bg-1.jpg);">
+                        <div class="img" style="background-image: url(../img/register_background.jpg);">
                         </div>
                         <div class="login-wrap p-4 p-md-5">
                             <div class="d-flex">
@@ -170,7 +170,7 @@ $old = getFlashData('old');
                                 </div>
 
                             </form>
-                            <p class="text-center">Đã có tài khoản?<a href="?module=authen&action=login">Đăng nhập</a>
+                            <p class="text-center">Đã có tài khoản? <a href="?module=authen&action=login">Đăng nhập</a>
                             </p>
                             <style>
                                 a{

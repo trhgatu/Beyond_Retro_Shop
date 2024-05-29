@@ -32,7 +32,7 @@ layout('header', $data);
 <div class="container" style="padding-top: 110px">
     <div class="main-body">
         <div class="row">
-        <div class="col-lg-4" style="padding: 0">
+            <div class="col-lg-4" style="padding: 0">
                 <?php
                 if (!empty($profileUser)):
                     include "card.php";
@@ -42,18 +42,19 @@ layout('header', $data);
                     <div class="card">
 
                         <form class="user" method="post">
-                            <?php
-                            if (!empty($msg)) {
-                                getMSG($msg, $msg_type);
-                            }
-                            ?>
+
                             <div class="card-body">
-                                <div class="row mb-3">
+                                <?php
+                                if (!empty($msg)) {
+                                    getMSG($msg, $msg_type);
+                                }
+                                ?>
+                                <div class="row mb-3" style="margin-bottom: 15px">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Mật khẩu mới</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                        <input type="text" class="form-control" name="password"
+                                        <input type="password" class="form-control" name="password"
                                             placeholder="Nhập mật khẩu mới"></input>
                                     </div>
                                     <?php
@@ -61,12 +62,12 @@ layout('header', $data);
 
                                     ?>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row mb-3" style="margin-bottom: 15px">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Nhập lại mật khẩu</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary d-flex justify-content-between">
-                                        <input type="text" class="form-control" name="password_confirm"
+                                        <input type="password" class="form-control" name="password_confirm"
                                             placeholder="Nhập lại mật khẩu mới"></input>
                                     </div>
                                     <?php
@@ -77,7 +78,7 @@ layout('header', $data);
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-9 text-secondary">
-                                        <button class="form-control" type="submit">Xác nhận</button>
+                                        <button class="form-control btn btn-primary" type="submit">Xác nhận</button>
                                     </div>
                                 </div>
                             </div>
@@ -92,8 +93,8 @@ layout('header', $data);
 
     <?php
 
-                        endif;
-                        ?>
+                endif;
+                ?>
 
 <?php
 layout('footer', $data);

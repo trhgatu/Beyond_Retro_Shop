@@ -133,14 +133,7 @@ $old = getFlashData('old');
                                             <input type="checkbox" value="1" name="flag">
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="new">Sản phẩm mới:</label>
-                                            <input type="checkbox" value="1" name="new">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="new">Sản phẩm bán chạy nhất:</label>
-                                            <input type="checkbox" value="1" name="bestseller">
-                                        </div>
+
                                         <div class="form-group">
                                             <p>Ảnh bìa:</p>
                                             <input type="file" class="form-control form-control-user" name="thumbnail"

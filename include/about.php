@@ -8,7 +8,7 @@ require_once ("../db_function/session.php");
 require_once '../class/product.php';
 require_once '../class/category.php';
 $data = [
-    'pageTitle' => 'About'
+    'pageTitle' => 'Giới thiệu'
 ];
 //Kiểm tra trạng thái đăng nhập
 if (!isUserLogin()) {
@@ -38,7 +38,7 @@ if (!isUserLogin()) {
                     <div class="breadcrumb__text">
                         <h4>Giới thiệu</h4>
                         <div class="breadcrumb__links">
-                            <a href="index.php">Home</a>
+                            <a href="<?php echo BASE_URL; ?>index.php">Home</a>
                             <span>Giới thiệu</span>
                         </div>
                     </div>
@@ -61,24 +61,20 @@ if (!isUserLogin()) {
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-6">
                     <div class="about__item">
-                        <h4>About Me</h4>
-                        <p>Một sinh viên Trường đại học Công thương HUIT - Trần Hoàng Anh Tú - MSSV: 2001210084,
-                            người thực hiện dự án Web bán quần áo second hand - Beyond Retro.
+                        <h4>Về dự án</h4>
+                        <p>Đây là một website bán quần áo second-hand có tên là Beyond Retro.</p>
                         </p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6">
                     <div class="about__item">
-                        <h4>About Shop</h4>
-                        <p>In this digital generation where information can be easily obtained within seconds, business
-                            cards still have retained their importance.</p>
+
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6">
                     <div class="about__item">
-                        <h4>Why Choose Us</h4>
-                        <p>A two or three storey house is the ideal way to maximise the piece of earth on which our home
-                            sits, but for older or infirm people.</p>
+                        <h4>Định hướng</h4>
+                        <p>Hoàn thành Đồ án môn học Lập trình Mã nguồn mở bằng ngôn ngữ lập trình PHP.</p>
                     </div>
                 </div>
             </div>
@@ -113,58 +109,14 @@ if (!isUserLogin()) {
             </div>
         </div>
     </section>
-    <!-- Testimonial Section End -->
 
-    <!-- Counter Section Begin -->
-    <section class="counter spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="counter__item">
-                        <div class="counter__item__number">
-                            <h2 class="cn_num">102</h2>
-                        </div>
-                        <span>Our <br />Clients</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="counter__item">
-                        <div class="counter__item__number">
-                            <h2 class="cn_num">30</h2>
-                        </div>
-                        <span>Total <br />Categories</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="counter__item">
-                        <div class="counter__item__number">
-                            <h2 class="cn_num">102</h2>
-                        </div>
-                        <span>In <br />Country</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="counter__item">
-                        <div class="counter__item__number">
-                            <h2 class="cn_num">98</h2>
-                            <strong>%</strong>
-                        </div>
-                        <span>Happy <br />Customer</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Counter Section End -->
-
-    <!-- Team Section Begin -->
     <section class="team spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title">
-                        <span>Our Team</span>
-                        <h2>Meet Our Team</h2>
+                        <span>Thông tin sinh viên</span>
+                        <h2>Sinh viên thực hiện</h2>
                     </div>
                 </div>
             </div>
@@ -173,8 +125,8 @@ if (!isUserLogin()) {
                     <div class="team__item">
                         <img src="../img/about/me.png" alt="">
                         <h4>Trần Hoàng Anh Tú</h4>
-                        <span>Fashion Design</span>
-                        <span>Manager</span>
+                        <span>Mã số sinh viên: 2001210084</span>
+                        <span>Sinh viên trường Đại học Công thương Thành Phố Hồ Chí Minh</span>
 
                     </div>
                 </div>
@@ -184,37 +136,6 @@ if (!isUserLogin()) {
         </div>
     </section>
 
-    <section class="clients spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title">
-                        <span>Partner</span>
-                        <h2>Happy Clients</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"></a>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-6">
-                    <a href="#" class="client__item"></a>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="team__item">
-                        <img src="../img/clients/thay.JPG" alt="">
-                        <h4>Đinh Nguyễn Trọng Nghĩa</h4>
-                        <span>Client</span>
-
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
-    </section>
-    <!-- Client Section End -->
 
     <!-- Footer Section Begin -->
     <?php

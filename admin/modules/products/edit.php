@@ -21,9 +21,6 @@ if (!empty($filterAll['id'])) {
     }
 }
 
-$data = [
-    'pageTitle' => 'Sửa sản phẩm'
-];
 
 if (isPost()) {
     $filterAll = filter();
@@ -55,13 +52,21 @@ if (isPost()) {
 
     if (empty($error)) {
         try {
-            $gallery_dest = $product->uploadGallery($_FILES['images_path']);
-            $dest = $product->uploadThumbnail();
-            if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $dest)) {
-                $product->updateProduct($filterAll, $dest, $gallery_dest);
+            if ($_FILES['thumbnail']['error'] == UPLOAD_ERR_OK) {
+                $dest = $product->uploadThumbnail();
+                if (!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $dest)) {
+                    throw new Exception('Unable to move thumbnail file');
+                }
             } else {
-                throw new Exception('Unable to move file');
+                $dest = null;
             }
+
+            if (!empty($_FILES['images_path']['name'][0])) {
+                $gallery_dest = $product->uploadGallery($_FILES['images_path']);
+            } else {
+                $gallery_dest = [];
+            }
+            $product->updateProduct($filterAll, $dest, $gallery_dest);
         } catch (Exception $e) {
             echo $e->getMessage();
         }
@@ -76,6 +81,7 @@ if (isPost()) {
 }
 
 
+
 $msg = getFlashData('msg');
 $msg_type = getFlashData('msg_type');
 $error = getFlashData('error');
@@ -84,9 +90,6 @@ $productDetails = getFlashData('product-detail');
 if ($productDetails) {
     $old = $productDetails;
 }
-echo '<pre>';
-var_dump($old);
-echo '</pre>';
 ?>
 <div id="wrapper">
     <?php
@@ -157,16 +160,6 @@ echo '</pre>';
                                             <label for="flag">Hiển thị sản phẩm ở trang chủ: </label>
                                             <input type="checkbox" <?php echo isset($old['flag']) && $old['flag'] ? 'checked' : ''; ?> name="flag">
                                             <?php echo form_error('flag', '<span class= "error">', '</span>', $error); ?>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="new">Sản phẩm mới:</label>
-                                            <input type="checkbox" <?php echo isset($old['new']) && $old['new'] ? 'checked' : ''; ?> name="new">
-                                            <?php echo form_error('new', '<span class= "error">', '</span>', $error); ?>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="bestseller">Sản phẩm bán chạy nhất:</label>
-                                            <input type="checkbox" <?php echo isset($old['bestseller']) && $old['bestseller'] ? 'checked' : ''; ?> name="bestseller">
-                                            <?php echo form_error('bestseller', '<span class= "error">', '</span>', $error); ?>
                                         </div>
 
                                         <div class="form-group">

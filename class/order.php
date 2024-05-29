@@ -70,19 +70,66 @@ class Order
                 setFlashData('msg', 'Đặt hàng thành công');
                 unset($_SESSION['cart']);
                 unset($_SESSION['cart_count']);
-                redirect('http://localhost/Beyond_Retro/include/thankyou.php');
+                redirect(BASE_URL . 'thankyou.php');
             } else {
                 setFlashData('msg', 'Đặt hàng thất bại.');
                 setFlashData('msg_type', 'danger');
-                redirect('http://localhost/Beyond_Retro/include/checkout.php');
+                redirect(BASE_URL . 'thankyou.php');
             }
         } else {
             setFlashData('msg', 'Đặt hàng thất bại.');
             setFlashData('msg_type', 'danger');
         }
     }
-
-
-
-
+    public function delete()
+    {
+        $filterAll = filter();
+        if (!empty($filterAll['id'])) {
+            $orderId = $filterAll['id'];
+            $orderDetail = getRaw("SELECT * FROM orders WHERE id = $orderId");
+            if ($orderDetail > 0) {
+                $deleteOrderDetail = delete('order_details', "order_id = $orderId ");
+                if ($deleteOrderDetail) {
+                    $deleteOrder = delete('orders', "id = $orderId");
+                    if ($deleteOrder) {
+                        setFlashData('msg', 'Xóa đơn hàng thành công.');
+                        setFlashData('msg_type', 'success');
+                    } else {
+                        setFlashData('msg', 'Xóa đơn hàng thất bại, vui lòng thử lại !');
+                        setFlashData('msg_type', 'danger');
+                    }
+                }
+            } else {
+                setFlashData('msg', 'Đơn hàng không tồn tại trong hệ thống.');
+                setFlashData('msg_type', 'danger');
+            }
+        } else {
+            setFlashData('msg', 'Liên kết không tồn tại.');
+            setFlashData('msg_type', 'danger');
+        }
+        redirect('?module=orders&action=list');
+    }
+    public function cancel($orderId)
+    {
+        if (!empty($orderId)) {
+            $orderDetail = getRaw("SELECT * FROM orders WHERE id = $orderId");
+            if ($orderDetail) {
+                $updateStatus = update('orders', ['status' => 2], "id = $orderId");
+                if ($updateStatus) {
+                    setFlashData('msg', 'Đơn hàng đã được hủy thành công.');
+                    setFlashData('msg_type', 'success');
+                } else {
+                    setFlashData('msg', 'Hủy đơn hàng thất bại, vui lòng thử lại.');
+                    setFlashData('msg_type', 'danger');
+                }
+            } else {
+                setFlashData('msg', 'Đơn hàng không tồn tại trong hệ thống.');
+                setFlashData('msg_type', 'danger');
+            }
+        } else {
+            setFlashData('msg', 'Liên kết không tồn tại.');
+            setFlashData('msg_type', 'danger');
+        }
+        redirect('?module=orders&action=list');
+    }
 }

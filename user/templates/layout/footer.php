@@ -5,7 +5,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="footer__about">
                     <div class="footer__logo">
-                        <a href="http://localhost/Beyond_Retro/include/index.php"><img src="../img/logo-footer.png" alt=""></a>
+                        <a href="<?php echo BASE_URL; ?>index.php"><img src="../img/logo-footer.png" alt=""></a>
                     </div>
 
                     <a href="#"><img src="../img/payment.png" alt=""></a>
@@ -15,10 +15,10 @@
                 <div class="footer__widget">
                     <h6>Liên kết</h6>
                     <ul>
-                        <li><a href="#">Clothing Store</a></li>
-                        <li><a href="#">Trending Shoes</a></li>
-                        <li><a href="#">Accessories</a></li>
-                        <li><a href="#">Sale</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>index.php">Home</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>shop.php">Shop</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>about.php">Giới thiệu</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>contact.php">Liên hệ</a></li>
                     </ul>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <div class="footer__widget">
                     <h6>Liên hệ</h6>
                     <ul>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Liên hệ</a></li>
                         <li><a href="#">Payment Methods</a></li>
                         <li><a href="#">Delivary</a></li>
                         <li><a href="#">Return & Exchanges</a></li>
@@ -35,13 +35,11 @@
             </div>
             <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
                 <div class="footer__widget">
-                    <h6>Gửi thư cho chúng tôi</h6>
+                    <h6>Lời cảm ơn</h6>
                     <div class="footer__newslatter">
-                        <p>Be the first to know about new arrivals, look books, sales & promos!</p>
-                        <form action="#">
-                            <input type="text" placeholder="Your email">
-                            <button type="submit"><span class="icon_mail_alt"></span></button>
-                        </form>
+                        <p>Cảm ơn quý khách vì đã tin tưởng và sử dụng dịch vụ của chúng tôi</p>
+                        <p>Beyond Retro rất hân hạnh được phục vụ quý khách!</p>
+
                     </div>
                 </div>
             </div>

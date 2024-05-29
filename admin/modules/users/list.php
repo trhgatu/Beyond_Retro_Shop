@@ -26,13 +26,13 @@ $msg_type = getFlashData('msg_type');
             layout_admin('header', $data);
             ?>
             <div class="container-fluid">
-                <div class="card shadow mb-4" style="max-width: 1240px">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
+                <div class="card mb-4" style="max-width: 1240px; box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+                    <div class="card-header py-3" style="background-color:#CC181E">
+                        <h5 class="m-0 font-weight-bold text-white">
                             Danh sách người dùng
-                            <a href="?module=users&action=add" class="btn btn-success btn-sm" style="float:right">Thêm
-                                người dùng<i class="fa-solid fa-plus"></i></a>
-                        </h6>
+                            <a href="?module=users&action=add" class="btn btn-light btn-sm" style="float:right">Thêm
+                                người dùng <i class="fa-solid fa-plus"></i></a>
+                        </h5>
                     </div>
                     <?php
                     if (!empty($msg)) {
@@ -42,7 +42,7 @@ $msg_type = getFlashData('msg_type');
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered">
-                                <thead>
+                                <thead class="thead-light">
                                     <th>STT</th>
                                     <th width="80px">Loại</th>
                                     <th>Avatar</th>
@@ -68,7 +68,7 @@ $msg_type = getFlashData('msg_type');
                                             ?>
                                             <tr>
                                                 <td>
-                                                    <?php echo $count; ?>
+                                                   <p><?php echo $count; ?></p>
                                                 </td>
                                                 <td>
                                                     <p>
