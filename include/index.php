@@ -41,7 +41,7 @@ $data = [
     require_once ("../db_function/session.php");
     layout('header', $data);
     layout('search', $data);
-    include 'main.php';
+    include '../include/main.php';
     layout('menu', $data);
     layout('footer', $data);
     ?>

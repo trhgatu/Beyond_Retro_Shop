@@ -5,15 +5,14 @@ if (!defined("_CODE")) {
 ?>
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient sidebar sidebar-dark accordion" id="accordionSidebar"
-    style="background-color: #CC181E; ">
+    style="background-color: #CC181E; width: 500px">
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="?module=home&action=dashboard"
         style="margin: 15px">
-        <div class="sidebar-brand-text mx-3" style="font-family: sans-serif; font-size: 20"> <img
-                src="../img/settings.png" style="width: 50px">ADMINISTRATOR</div>
+        <div class="header-logo">
+            <img src="../img/logo-footer.png" style="width: 200px; height: auto">
+        </div>
     </a>
-
-
     <!-- Divider -->
 
     <hr class="sidebar-divider d-none d-md-block">

@@ -119,7 +119,7 @@ if (isPost() && isset($_POST['update-cart'])) {
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="continue__btn">
-                                    <a href="http://localhost/Beyond_Retro/include/shop.php">Tiếp tục mua sắm</a>
+                                    <a href="<?php echo BASE_URL; ?>shop.php">Tiếp tục mua sắm</a>
                                 </div>
                             </div>
                             <?php if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])): ?>

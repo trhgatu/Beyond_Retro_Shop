@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
     if (isset($_SESSION['cart'][$productId])) {
         $cart = new Cart($conn);
         $cart->removeFromCart($productId);
-        redirect("http://localhost/Beyond_Retro/include/shopping-cart.php");
+        redirect(BASE_URL . "shopping-cart.php");
     } else {
         echo "Không tìm thấy sản phẩm trong giỏ hàng";
     }

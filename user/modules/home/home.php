@@ -28,12 +28,10 @@ $data = [
 
 <body>
     <?php
-
     layout('header', $data);
     layout('menu', $data);
     layout('main', $data);
     layout('footer', $data);
-
     ?>
 
 </body>

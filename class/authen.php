@@ -71,7 +71,7 @@ class Authen
                         if ($insertStatus) {
                             setSession('user_id', $userId);
                             setSession('tokenlogin', $tokenLogin);
-                            redirect('http://localhost/Beyond_Retro/include/');
+                            redirect(BASE_URL);
                         } else {
                             setFlashData('msg', 'Không thể đăng nhập, vui lòng thử lại sau.');
                             setFlashData('msg_type', 'danger');
@@ -170,7 +170,7 @@ class Authen
             removeSession('cart_count');
 
             // Chuyển hướng người dùng
-            redirect('http://localhost/Beyond_Retro/include/');
+            redirect(BASE_URL);
         }
 
     }

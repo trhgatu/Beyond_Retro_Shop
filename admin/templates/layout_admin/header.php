@@ -29,6 +29,10 @@ if (!defined("_CODE")) {
         <!-- Topbar -->
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top" style="box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;">
             <!-- Sidebar Toggle (Topbar) -->
+            <div class="header-title " style="border-right: 2px solid #000000">
+                <div class="sidebar-brand-text mx-3" style="font-family: sans serif; font-size: 20px; text-transform: uppercase; font-weight: 800; color: #000000; margin: 0;">Hệ thống quản trị</div>
+            </div>
+
             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                 <i class="fa fa-bars"></i>
             </button>

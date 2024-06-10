@@ -74,8 +74,8 @@ if ($userDetails) {
                     <div class="breadcrumb__text">
                         <h4>Thanh toán</h4>
                         <div class="breadcrumb__links">
-                            <a href="./index.html">Home</a>
-                            <a href="http://localhost/Beyond_Retro/include/shop.php">Shop</a>
+                            <a href="<?php echo BASE_URL ?>index.php">Home</a>
+                            <a href="<?php echo BASE_URL ?>shop.php">Shop</a>
                             <span>Thanh toán</span>
                         </div>
                     </div>
